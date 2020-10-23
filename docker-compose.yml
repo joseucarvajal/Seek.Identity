@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  seekq.identity:
+    image: ${DOCKER_REGISTRY-}seekqidentity
+    build:
+      context: .
+      dockerfile: SeekQ.Identity/Dockerfile
+    environment:
+      ASPNETCORE_ConnectionStrings__MSSQL: "Server=mssqlsrv,1433;Database=SeekQ.NotificationsAndModesSettings;User Id=sa;Password=Password123"
+    depends_on:
+      - mssqlsrv
+
+  #ports: host:container
+  mssqlsrv:
+    image: "mcr.microsoft.com/mssql/server:2017-latest"
+    container_name: SeekQDb
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "Password123"
+      ACCEPT_EULA: "Y"
+
