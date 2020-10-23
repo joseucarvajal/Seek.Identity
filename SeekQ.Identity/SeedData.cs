@@ -22,10 +22,9 @@ namespace SeekQ.Identity
             var services = new ServiceCollection();
             services.AddLogging();
 
-
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer("Server=mssqlsrv,1433;Database=SeekQ.NotificationsAndModesSettings;User Id=sa;Password=Password123"));
-            
+               options.UseSqlServer(connectionString));
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
