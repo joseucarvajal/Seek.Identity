@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: SeekQ.Identity/Dockerfile
     environment:
-      ASPNETCORE_ConnectionStrings__MSSQL: "Server=mssqlsrv,1433;Database=SeekQ.NotificationsAndModesSettings;User Id=sa;Password=Password123"
+      ASPNETCORE_ConnectionStrings__MSSQL: "Server=mssqlsrv,1433;Database=SeekQ.Identity;User Id=sa;Password=Password123"
     depends_on:
       - mssqlsrv
 

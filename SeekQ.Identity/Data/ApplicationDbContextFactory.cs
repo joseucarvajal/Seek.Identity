@@ -12,7 +12,7 @@ namespace SeekQ.Identity.Data
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Server=127.0.0.1,1433;Database=SeekQ.NotificationsAndModesSettings;User Id=sa;Password=Password123");
+            optionsBuilder.UseSqlServer("Server=127.0.0.1,1433;Database=SeekQ.Identity;User Id=sa;Password=Password123");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

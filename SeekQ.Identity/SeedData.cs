@@ -35,7 +35,8 @@ namespace SeekQ.Identity
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                    context.Database.Migrate();
+                    //context.Database.Migrate();
+                    context.Database.EnsureCreated();
 
                     var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();                    
 
