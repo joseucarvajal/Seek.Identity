@@ -44,20 +44,20 @@ namespace SeekQ.Identity.Api.User
             return Ok(appUser);
         }
 
-        [HttpPost]
-        [Route("sendverification/{phoneNumber}")]
+        [HttpGet]
+        [Route("hello")]
+        public async Task<ActionResult<Unit>> Hello()
+        {
+            return Ok("hello");
+        }
+
+
+        [HttpGet]
+        [Route("requestverificationcode/{phoneNumber}")]
         public async Task<ActionResult<Unit>> SendVerification(
         [FromRoute] string phoneNumber
     )
         {
-            /*
-
-            var verification = await VerificationResource.CreateAsync(
-                               to: phoneNumber,
-                               channel: "sms",
-                               pathServiceSid: _settings.VerificationServiceSID
-                           );
-            */
             return await _mediator.Send(new SendPhoneVerificationCodeCommandHandler.Command(phoneNumber));
         }
     }

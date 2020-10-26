@@ -62,7 +62,7 @@ namespace SeekQ.Identity.Application.Commands
                                        );
 
                     }
-                    catch //Twilio exception
+                    catch(Exception) //Twilio exception
                     {
                         throw new AppException("There was an error. Please verify your phone number and try again.");
                     }

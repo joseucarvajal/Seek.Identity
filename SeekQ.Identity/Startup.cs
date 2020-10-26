@@ -35,6 +35,14 @@ namespace SeekQ.Identity
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+                           options.AddDefaultPolicy(builder =>
+                               builder.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                           )
+                       );
+
             services.AddControllersWithViews()
                     .AddFluentValidation(cfg =>
                     {
