@@ -13,6 +13,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using App.Common.DependencyInjection;
+using Twilio;
+using SeekQ.Identity.Twilio;
+using FluentValidation.AspNetCore;
+using SeekQ.Identity.Application.Commands;
+using MediatR;
+using App.Common.Middlewares;
 
 namespace SeekQ.Identity
 {
@@ -29,14 +35,15 @@ namespace SeekQ.Identity
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-
-            /*
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            */
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration);
+            services.AddControllersWithViews()
+                    .AddFluentValidation(cfg =>
+                    {
+                        cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneVerificationCodeCommandHandler>();
+                        cfg.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                    });
+                                
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                .AddMediatR(typeof(SendPhoneVerificationCodeCommandHandler).Assembly);
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -64,13 +71,18 @@ namespace SeekQ.Identity
                 .AddGoogle(options =>
                 {
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    
+
                     // register your IdentityServer with Google at https://console.developers.google.com
                     // enable the Google+ API
                     // set the redirect URI to https://localhost:5001/signin-google
                     options.ClientId = "copy client ID from Google here";
                     options.ClientSecret = "copy client secret from Google here";
                 });
+
+            var accountSid = Configuration["Twilio:AccountSID"];
+            var authToken = Configuration["Twilio:AuthToken"];
+            TwilioClient.Init(accountSid, authToken);
+            services.Configure<TwilioVerifySettings>(Configuration.GetSection("Twilio"));
         }
 
         public void Configure(IApplicationBuilder app)
@@ -86,6 +98,9 @@ namespace SeekQ.Identity
             app.UseRouting();
             app.UseIdentityServer();
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
