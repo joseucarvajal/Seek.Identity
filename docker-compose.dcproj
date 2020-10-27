@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>1d312a2e-e420-45ac-8044-06a33d1b0e39</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/home</DockerServiceUrl>
     <DockerServiceName>seekq.identity</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>

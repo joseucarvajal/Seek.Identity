@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeekQ.Identity.Application.Commands.CodeVerification;
 using SeekQ.Identity.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
 
@@ -44,7 +45,9 @@ namespace SeekQ.Identity.Api
 
         [HttpGet]
         [Route("send/{phoneNumberOrEmail}")]
+        [SwaggerOperation(Summary = "Send code verification to a mobile phone via Twilio or Email")]        
         public async Task<ActionResult<Unit>> SendVerification(
+            [SwaggerParameter(Description = "Phone number with indicative e.g. (+57...)")]
             [FromRoute] string phoneNumberOrEmail
         )
         {
@@ -53,6 +56,7 @@ namespace SeekQ.Identity.Api
 
         [HttpPost]
         [Route("verify")]
+        [SwaggerOperation(Summary = "Checks whether a validation code is valid or not")]
         public async Task<ActionResult<Unit>> Validate(
             [FromBody] VerifyPhoneOrEmailCodeParams verifyPhoneOrEmailCodeParams
         )

@@ -91,6 +91,11 @@ namespace SeekQ.Identity
             var authToken = Configuration["Twilio:AuthToken"];
             TwilioClient.Init(accountSid, authToken);
             services.Configure<TwilioVerifySettings>(Configuration.GetSection("Twilio"));
+
+            services.AddSwaggerGen(config => {
+                config.EnableAnnotations();
+            });
+
         }
 
         public void Configure(IApplicationBuilder app)
@@ -102,6 +107,14 @@ namespace SeekQ.Identity
             }
 
             app.UseStaticFiles();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity API v1");
+                c.RoutePrefix = "swagger"; //Swagger at the  project root URL
+            });
 
             app.UseRouting();
             app.UseIdentityServer();
