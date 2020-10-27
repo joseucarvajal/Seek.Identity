@@ -1,24 +1,21 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using SeekQ.Identity.Application.Commands;
+using SeekQ.Identity.Application.Commands.CodeVerification;
 using SeekQ.Identity.Models;
-using SeekQ.Identity.Twilio;
 using System;
 using System.Threading.Tasks;
-using Twilio.Rest.Verify.V2.Service;
 
-namespace SeekQ.Identity.Api.User
+namespace SeekQ.Identity.Api
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class CodeVerificationController : ControllerBase
     {
         private UserManager<ApplicationUser> _userManager;        
         private readonly IMediator _mediator;
 
-        public UserController(
+        public CodeVerificationController(
             IMediator mediator,
             UserManager<ApplicationUser> userManager)
         {
@@ -29,8 +26,8 @@ namespace SeekQ.Identity.Api.User
         [HttpPost]
         [Route("initialcreate/fromphone/{phoneNumber}")]
         public async Task<ActionResult<ApplicationUser>> InitialCreateFromPhoneNumber(
-        [FromRoute] string phoneNumber
-    )
+            [FromRoute] string phoneNumber
+        )
         {
             ApplicationUser appUser = new ApplicationUser
             {
@@ -44,21 +41,26 @@ namespace SeekQ.Identity.Api.User
             return Ok(appUser);
         }
 
+
         [HttpGet]
-        [Route("hello")]
-        public async Task<ActionResult<Unit>> Hello()
+        [Route("send/{phoneNumberOrEmail}")]
+        public async Task<ActionResult<Unit>> SendVerification(
+            [FromRoute] string phoneNumberOrEmail
+        )
         {
-            return Ok("hello");
+            return await _mediator.Send(new SendPhoneCodeVerificationCommandHandler.Command(phoneNumberOrEmail));
         }
 
-
-        [HttpGet]
-        [Route("requestverificationcode/{phoneNumber}")]
-        public async Task<ActionResult<Unit>> SendVerification(
-        [FromRoute] string phoneNumber
-    )
+        [HttpPost]
+        [Route("verify")]
+        public async Task<ActionResult<Unit>> Validate(
+            [FromBody] VerifyPhoneOrEmailCodeParams verifyPhoneOrEmailCodeParams
+        )
         {
-            return await _mediator.Send(new SendPhoneVerificationCodeCommandHandler.Command(phoneNumber));
+            string phoneOrEmail = verifyPhoneOrEmailCodeParams.PhoneOrEmail;
+            string codeToVerify = verifyPhoneOrEmailCodeParams.CodeToVerify;
+
+            return await _mediator.Send(new VerifyPhoneCodeCommandHandler.Command(phoneOrEmail, codeToVerify));
         }
     }
 }

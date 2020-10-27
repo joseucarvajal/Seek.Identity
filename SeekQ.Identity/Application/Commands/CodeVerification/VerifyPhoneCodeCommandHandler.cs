@@ -5,23 +5,23 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using SeekQ.Identity.Twilio;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Twilio.Rest.Verify.V2.Service;
 
-namespace SeekQ.Identity.Application.Commands
+namespace SeekQ.Identity.Application.Commands.CodeVerification
 {
-    public class SendPhoneVerificationCodeCommandHandler
+    public class VerifyPhoneCodeCommandHandler
     {
         public class Command : IRequest<Unit>
         {
             public string PhoneNumber { get; set; }
+            public string CodeToVerify { get; set; }
 
-            public Command(String phoneNumber)
+            public Command(string phoneNumber, string codeToVerify)
             {
-                PhoneNumber = phoneNumber;
+                PhoneNumber = phoneNumber;                     
+                CodeToVerify = codeToVerify;
             }
 
             public class CommandValidator : AbstractValidator<Command>
@@ -29,9 +29,13 @@ namespace SeekQ.Identity.Application.Commands
                 public CommandValidator()
                 {
                     RuleFor(x => x.PhoneNumber)
-                        .NotNull().NotEmpty().WithMessage("Please enter phone number")
+                        .NotNull().NotEmpty().WithMessage("Please enter a phone number")
                         //https://www.twilio.com/docs/glossary/what-e164
                         .Matches("^\\+[1-9]\\d{1,14}$").WithMessage("Please enter a valid phone number");
+
+                    RuleFor(x => x.CodeToVerify)
+                        .NotNull().NotEmpty().WithMessage("Please enter a verification code")
+                        .Length(6).WithMessage("Verification code should have 6 characters");
                 }
             }
 
@@ -45,26 +49,25 @@ namespace SeekQ.Identity.Application.Commands
                 }
 
                 public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
-                {                    
-                    if (!request.PhoneNumber.StartsWith("+"))
-                    {
-                        request.PhoneNumber = $"+{request.PhoneNumber}";
-                    }
-
+                {           
                     ManualValidateRequest(request);
 
                     try
                     {
-                        var verification = await VerificationResource.CreateAsync(
+                        var verification = await VerificationCheckResource.CreateAsync(
                                            to: request.PhoneNumber,
-                                           channel: "sms",
+                                           code: request.CodeToVerify,
                                            pathServiceSid: _settings.VerificationServiceSID
                                        );
 
+                        if(verification.Status != "approved")
+                        {
+                            throw new AppException("The verification code is not valid. Please try again.");
+                        }
                     }
                     catch(Exception) //Twilio exception
                     {
-                        throw new AppException("There was an error. Please verify your phone number and try again.");
+                        throw new AppException("The verification code is not valid. Please try again.");
                     }
 
                     return Unit.Value;

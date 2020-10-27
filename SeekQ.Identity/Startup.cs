@@ -16,7 +16,7 @@ using App.Common.DependencyInjection;
 using Twilio;
 using SeekQ.Identity.Twilio;
 using FluentValidation.AspNetCore;
-using SeekQ.Identity.Application.Commands;
+using SeekQ.Identity.Application.Commands.CodeVerification;
 using MediatR;
 using App.Common.Middlewares;
 
@@ -46,12 +46,12 @@ namespace SeekQ.Identity
             services.AddControllersWithViews()
                     .AddFluentValidation(cfg =>
                     {
-                        cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneVerificationCodeCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneCodeVerificationCommandHandler>();
                         cfg.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                     });
                                 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                .AddMediatR(typeof(SendPhoneVerificationCodeCommandHandler).Assembly);
+                .AddMediatR(typeof(SendPhoneCodeVerificationCommandHandler).Assembly);
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
