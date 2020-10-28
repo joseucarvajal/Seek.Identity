@@ -1,4 +1,4 @@
-﻿namespace SeekQ.Identity.Application.Commands.CodeVerification
+﻿namespace SeekQ.Identity.Application.CodeVerification.Commands
 {
     public class VerifyPhoneOrEmailCodeParams
     {

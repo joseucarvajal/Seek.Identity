@@ -16,7 +16,7 @@ using App.Common.DependencyInjection;
 using Twilio;
 using SeekQ.Identity.Twilio;
 using FluentValidation.AspNetCore;
-using SeekQ.Identity.Application.Commands.CodeVerification;
+using SeekQ.Identity.Application.CodeVerification.Commands;
 using MediatR;
 using App.Common.Middlewares;
 

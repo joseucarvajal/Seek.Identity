@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Twilio.Rest.Verify.V2.Service;
 
-namespace SeekQ.Identity.Application.Commands.CodeVerification
+namespace SeekQ.Identity.Application.CodeVerification.Commands
 {
     public class SendPhoneCodeVerificationCommandHandler
     {

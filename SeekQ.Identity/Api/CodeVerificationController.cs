@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SeekQ.Identity.Application.Commands.CodeVerification;
+using SeekQ.Identity.Application.CodeVerification.Commands;
 using SeekQ.Identity.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;

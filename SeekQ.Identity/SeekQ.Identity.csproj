@@ -34,4 +34,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\App.Common\App.Common\App.Common.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Profile\Commands\" />
+  </ItemGroup>
 </Project>
