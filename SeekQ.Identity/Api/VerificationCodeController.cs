@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SeekQ.Identity.Application.CodeVerification.Commands;
+using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -11,12 +11,12 @@ namespace SeekQ.Identity.Api
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class CodeVerificationController : ControllerBase
+    public class VerificationCodeController : ControllerBase
     {
         private UserManager<ApplicationUser> _userManager;        
         private readonly IMediator _mediator;
 
-        public CodeVerificationController(
+        public VerificationCodeController(
             IMediator mediator,
             UserManager<ApplicationUser> userManager)
         {
@@ -51,20 +51,20 @@ namespace SeekQ.Identity.Api
             [FromRoute] string phoneNumberOrEmail
         )
         {
-            return await _mediator.Send(new SendPhoneCodeVerificationCommandHandler.Command(phoneNumberOrEmail));
+            return await _mediator.Send(new SendPhoneVerificationCodeCommandHandler.Command(phoneNumberOrEmail));
         }
 
         [HttpPost]
-        [Route("verify")]
+        [Route("check")]
         [SwaggerOperation(Summary = "Checks whether a validation code is valid or not")]
         public async Task<ActionResult<Unit>> Validate(
-            [FromBody] VerifyPhoneOrEmailCodeParams verifyPhoneOrEmailCodeParams
+            [FromBody] CheckCodeParams verifyPhoneOrEmailCodeParams
         )
         {
             string phoneOrEmail = verifyPhoneOrEmailCodeParams.PhoneOrEmail;
             string codeToVerify = verifyPhoneOrEmailCodeParams.CodeToVerify;
 
-            return await _mediator.Send(new VerifyPhoneCodeCommandHandler.Command(phoneOrEmail, codeToVerify));
+            return await _mediator.Send(new CheckPhoneCodeCommandHandler.Command(phoneOrEmail, codeToVerify));
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace SeekQ.Identity.Application.CodeVerification.Commands
+﻿namespace SeekQ.Identity.Application.VerificationCode.Commands
 {
-    public class VerifyPhoneOrEmailCodeParams
+    public class CheckCodeParams
     {
         public string PhoneOrEmail { get; set; }
         public string CodeToVerify { get; set; }

@@ -2,23 +2,22 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using App.Common.DependencyInjection;
+using App.Common.Middlewares;
+using FluentValidation.AspNetCore;
 using IdentityServer4;
-using SeekQ.Identity.Data;
-using SeekQ.Identity.Models;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using App.Common.DependencyInjection;
-using Twilio;
+using SeekQ.Identity.Application.VerificationCode.Commands;
+using SeekQ.Identity.Data;
+using SeekQ.Identity.Models;
 using SeekQ.Identity.Twilio;
-using FluentValidation.AspNetCore;
-using SeekQ.Identity.Application.CodeVerification.Commands;
-using MediatR;
-using App.Common.Middlewares;
+using Twilio;
 
 namespace SeekQ.Identity
 {
@@ -46,12 +45,12 @@ namespace SeekQ.Identity
             services.AddControllersWithViews()
                     .AddFluentValidation(cfg =>
                     {
-                        cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneCodeVerificationCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneVerificationCodeCommandHandler>();
                         cfg.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                     });
                                 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                .AddMediatR(typeof(SendPhoneCodeVerificationCommandHandler).Assembly);
+                .AddMediatR(typeof(SendPhoneVerificationCodeCommandHandler).Assembly);
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
