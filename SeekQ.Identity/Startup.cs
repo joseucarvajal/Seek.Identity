@@ -93,6 +93,7 @@ namespace SeekQ.Identity
             services.Configure<TwilioVerifySettings>(Configuration.GetSection("Twilio"));
 
             services.AddSwaggerGen(config => {
+                config.CustomSchemaIds(x => x.FullName);
                 config.EnableAnnotations();
             });
 
