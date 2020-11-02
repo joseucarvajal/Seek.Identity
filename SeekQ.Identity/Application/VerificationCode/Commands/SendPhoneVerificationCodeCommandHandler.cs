@@ -62,8 +62,7 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                     try
                     {
                         ApplicationUser user = await _signUpService.CreateUserFromPhoneOrEmailAsync(request.PhoneNumber);
-                        
-                        /*
+                                                
                         var verification = await VerificationResource.CreateAsync(                                            
                                            to: request.PhoneNumber,
                                            channel: "sms",                                           
@@ -73,8 +72,7 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                         if(verification.Status != "pending")
                         {
                             throw new AppException("There was an error. Please verify your phone number and try again.");
-                        }
-                        */
+                        }                        
 
                         return user;
                     }

@@ -65,8 +65,7 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                     try
                     {
                         ManualValidateRequest(request);
-
-                        /*
+                        
                         var verification = await VerificationCheckResource.CreateAsync(
                                            to: request.PhoneNumber,
                                            code: request.CodeToVerify,
@@ -77,7 +76,6 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                         {
                             throw new AppException("The verification code is not valid. Please try again.");
                         }
-                        */
 
                         return await _signUpService.ConfirmUserPhoneOrEmail(
                             request.UserId, 
@@ -85,11 +83,12 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                         );
                     }
                     catch (AppException)
-                    {
+                    {                        
                         throw;
                     }
-                    catch(Exception) //Twilio exception
+                    catch(Exception e) //Twilio exception
                     {
+                        Console.WriteLine(e.ToString());
                         throw new AppException("The verification code is not valid. Please try again.");
                     }                    
                 }
