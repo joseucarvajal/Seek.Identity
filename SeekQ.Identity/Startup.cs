@@ -4,6 +4,7 @@
 
 using App.Common.DependencyInjection;
 using App.Common.Middlewares;
+using App.Common.SeedWork;
 using FluentValidation.AspNetCore;
 using IdentityServer4;
 using MediatR;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SeekQ.Identity.Application.Services;
 using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Data;
 using SeekQ.Identity.Models;
@@ -34,14 +36,6 @@ namespace SeekQ.Identity
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-                           options.AddDefaultPolicy(builder =>
-                               builder.AllowAnyOrigin()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader()
-                           )
-                       );
-
             services.AddControllersWithViews()
                     .AddFluentValidation(cfg =>
                     {
@@ -96,6 +90,8 @@ namespace SeekQ.Identity
                 config.EnableAnnotations();
             });
 
+            services.AddSingleton<Utils>();
+            services.AddScoped<SignUpService>();
         }
 
         public void Configure(IApplicationBuilder app)

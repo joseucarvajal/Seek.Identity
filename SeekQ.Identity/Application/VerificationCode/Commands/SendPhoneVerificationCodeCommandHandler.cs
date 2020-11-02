@@ -3,6 +3,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Options;
+using SeekQ.Identity.Application.Services;
+using SeekQ.Identity.Models;
 using SeekQ.Identity.Twilio;
 using System;
 using System.Threading;
@@ -13,11 +15,11 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
 {
     public class SendPhoneVerificationCodeCommandHandler
     {
-        public class Command : IRequest<Unit>
+        public class Command : IRequest<ApplicationUser>
         {
             public string PhoneNumber { get; set; }
 
-            public Command(String phoneNumber)
+            public Command(string phoneNumber)
             {
                 PhoneNumber = phoneNumber;
             }
@@ -33,26 +35,35 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                 }
             }
 
-            public class Handler : IRequestHandler<Command, Unit>
+            public class Handler : IRequestHandler<Command, ApplicationUser>
             {
                 private readonly TwilioVerifySettings _settings;
+                private readonly SignUpService _signUpService;
 
-                public Handler(IOptions<TwilioVerifySettings> settings)
+                public Handler(
+                    IOptions<TwilioVerifySettings> settings, 
+                    SignUpService signUpService
+                )
                 {
                     _settings = settings.Value;
+                    _signUpService = signUpService;
                 }
 
-                public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+                public async Task<ApplicationUser> Handle(Command request, CancellationToken cancellationToken)
                 {           
                     if (!request.PhoneNumber.StartsWith("+"))
                     {
                         request.PhoneNumber = $"+{request.PhoneNumber}";
                     }
 
-                    ManualValidateRequest(request);
+                    //throws and exception is data is not valid
+                    ManualValidateRequest(request);                    
 
                     try
                     {
+                        ApplicationUser user = await _signUpService.CreateUserFromPhoneOrEmailAsync(request.PhoneNumber);
+                        
+                        /*
                         var verification = await VerificationResource.CreateAsync(                                            
                                            to: request.PhoneNumber,
                                            channel: "sms",                                           
@@ -63,13 +74,18 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                         {
                             throw new AppException("There was an error. Please verify your phone number and try again.");
                         }
+                        */
+
+                        return user;
+                    }
+                    catch (AppException) //User already exist
+                    {
+                        throw;
                     }
                     catch(Exception) //Twilio exception
                     {
                         throw new AppException("There was an error. Please verify your phone number and try again.");
-                    }
-
-                    return Unit.Value;
+                    }                    
                 }
 
                 private ValidationResult ManualValidateRequest(Command request)

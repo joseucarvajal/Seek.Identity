@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SeekQ.Identity.Application.Profile.Commands;
 using SeekQ.Identity.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
 
@@ -11,33 +13,24 @@ namespace SeekQ.Identity.Api
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private UserManager<ApplicationUser> _userManager;        
+        
         private readonly IMediator _mediator;
 
         public ProfileController(
-            IMediator mediator,
-            UserManager<ApplicationUser> userManager)
+            IMediator mediator
+        )
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _userManager = userManager;            
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));            
         }
 
         [HttpPost]
-        [Route("initialcreate/fromphone/{phoneNumber}")]
+        [Route("create/user")]
+        [SwaggerOperation(Summary = "Creates basic user profile with phone or email and password")]
         public async Task<ActionResult<ApplicationUser>> InitialCreateFromPhoneNumber(
-            [FromRoute] string phoneNumber
+            [FromBody] ChangeUserPasswordCommandHandler.Command command
         )
         {
-            ApplicationUser appUser = new ApplicationUser
-            {
-                UserName = phoneNumber,
-                PhoneNumber = phoneNumber,
-                PhoneNumberConfirmed = false
-            };
-
-            var result = await _userManager.CreateAsync(appUser);
-
-            return Ok(appUser);
+            return await _mediator.Send(command);
         }
 
     }
