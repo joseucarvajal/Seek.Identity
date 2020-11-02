@@ -24,10 +24,10 @@ namespace SeekQ.Identity.Api
         }
 
         [HttpPost]
-        [Route("create/user")]
-        [SwaggerOperation(Summary = "Creates basic user profile with phone or email and password")]
-        public async Task<ActionResult<ApplicationUser>> InitialCreateFromPhoneNumber(
-            [FromBody] ChangeUserPasswordCommandHandler.Command command
+        [Route("set/password")]
+        [SwaggerOperation(Summary = "add password to an existing user")]
+        public async Task<ActionResult<ApplicationUser>> SetUserPassword(
+            [FromBody] SetUserPasswordCommandHandler.Command command
         )
         {
             return await _mediator.Send(command);

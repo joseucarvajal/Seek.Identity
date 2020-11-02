@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace SeekQ.Identity.Models
 {
@@ -11,5 +12,8 @@ namespace SeekQ.Identity.Models
 
         public int? GenderId { get; set; }
         public UserGender Gender { get; set; }
+
+        [JsonIgnore]
+        public override string PasswordHash { get; set; }
     }
 }
