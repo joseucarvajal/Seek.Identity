@@ -166,6 +166,10 @@ namespace SeekQ.Identity.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
+                    b.Property<string>("EmailConfirmationCode")
+                        .HasColumnType("nvarchar(7)")
+                        .HasMaxLength(7);
+
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 

@@ -64,7 +64,6 @@ namespace SeekQ.Identity.Migrations
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
                     SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
@@ -73,10 +72,12 @@ namespace SeekQ.Identity.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    EmailConfirmationCode = table.Column<string>(maxLength: 7, nullable: true),
                     MakeFirstNamePublic = table.Column<bool>(nullable: false),
                     MakeLastNamePublic = table.Column<bool>(nullable: false),
                     MakeBirthDatePublic = table.Column<bool>(nullable: false),
-                    GenderId = table.Column<int>(nullable: true)
+                    GenderId = table.Column<int>(nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

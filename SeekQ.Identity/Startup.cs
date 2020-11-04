@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 using SeekQ.Identity.Application.Services;
 using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Data;
@@ -92,6 +94,11 @@ namespace SeekQ.Identity
 
             services.AddSingleton<Utils>();
             services.AddScoped<SignUpService>();
+
+            MailKitOptions mailKitOptions = Configuration.GetSection("Email").Get<MailKitOptions>();
+            services.AddMailKit(config => {
+                config.UseMailKit(mailKitOptions);
+            });
         }
 
         public void Configure(IApplicationBuilder app)

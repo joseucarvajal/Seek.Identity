@@ -77,7 +77,7 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                             throw new AppException("The verification code is not valid. Please try again.");
                         }
 
-                        return await _signUpService.ConfirmUserPhoneOrEmail(
+                        return await _signUpService.UpdateUserAsConfirmed(
                             request.UserId, 
                             request.PhoneNumber
                         );

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using IdentityServer4.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Models;
@@ -29,9 +30,17 @@ namespace SeekQ.Identity.Api
             [FromRoute] string phoneNumberOrEmail
         )
         {
+            if (!phoneNumberOrEmail.IsNullOrEmpty() && phoneNumberOrEmail.Contains('@'))
+            {
+                return await _mediator.Send(
+                    new SendEmailVerificationCodeCommandHandler.Command(phoneNumberOrEmail)
+                );
+            }
+
             return await _mediator.Send(
                 new SendPhoneVerificationCodeCommandHandler.Command(phoneNumberOrEmail)
             );          
+
         }
 
         [HttpPost]
@@ -45,13 +54,24 @@ namespace SeekQ.Identity.Api
             string phoneOrEmail = verifyPhoneOrEmailCodeParams.PhoneOrEmail;
             string codeToVerify = verifyPhoneOrEmailCodeParams.CodeToVerify;
 
-            return Ok(await _mediator.Send(
+            if (!phoneOrEmail.IsNullOrEmpty() && phoneOrEmail.Contains('@'))
+            {
+                return await _mediator.Send(
+                    new CheckEmailCodeCommandHandler.Command(
+                        userId,
+                        phoneOrEmail,
+                        codeToVerify
+                    )
+               );
+            }                
+
+            return await _mediator.Send(
                 new CheckPhoneCodeCommandHandler.Command(
                     userId, 
                     phoneOrEmail, 
                     codeToVerify
                 )
-            ));
+            );
         }
     }
 }

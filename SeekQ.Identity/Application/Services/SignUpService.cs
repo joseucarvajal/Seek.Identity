@@ -1,6 +1,7 @@
 ﻿using App.Common.Exceptions;
 using App.Common.SeedWork;
 using Microsoft.AspNetCore.Identity;
+using NETCore.MailKit.Core;
 using SeekQ.Identity.Models;
 using System;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace SeekQ.Identity.Application.Services
     public class SignUpService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly Utils _utls;
+        private readonly Utils _utls;        
 
         public SignUpService(
             UserManager<ApplicationUser> userManager,
@@ -19,7 +20,7 @@ namespace SeekQ.Identity.Application.Services
         )
         {
             _userManager = userManager;
-            _utls = utils;
+            _utls = utils;            
         }
 
         public async Task<ApplicationUser> CreateUserFromPhoneOrEmailAsync(
@@ -62,6 +63,7 @@ namespace SeekQ.Identity.Application.Services
                 UserName = phoneNumberOrEmail,
                 Email = isEmail ? phoneNumberOrEmail : "",
                 PhoneNumber = !isEmail ? phoneNumberOrEmail : "",
+                EmailConfirmationCode = isEmail ? GetEmailVerificationCode() : ""
             };
 
             var result = await _userManager.CreateAsync(appUser);
@@ -73,7 +75,7 @@ namespace SeekQ.Identity.Application.Services
             return appUser;
         }
 
-        public async Task<ApplicationUser> ConfirmUserPhoneOrEmail(
+        public async Task<ApplicationUser> UpdateUserAsConfirmed(
             Guid userId,
             string phoneNumberOrEmail
         )
@@ -102,6 +104,23 @@ namespace SeekQ.Identity.Application.Services
             }
 
             return existingUser;
+        }
+
+        private string GetEmailVerificationCode()
+        {
+            Random ran = new Random();
+
+            string b = "0123456789";
+            int length = 6;
+            string random = "";
+
+            for (int i = 0; i < length; i++)
+            {
+                int a = ran.Next(10);
+                random = random + b.ElementAt(a);
+            }
+
+            return random;
         }
     }
 }

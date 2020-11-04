@@ -10,7 +10,7 @@ using SeekQ.Identity.Data;
 namespace SeekQ.Identity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201028103824_InitialCreate")]
+    [Migration("20201103201910_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,6 +167,10 @@ namespace SeekQ.Identity.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
+
+                    b.Property<string>("EmailConfirmationCode")
+                        .HasColumnType("nvarchar(7)")
+                        .HasMaxLength(7);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");

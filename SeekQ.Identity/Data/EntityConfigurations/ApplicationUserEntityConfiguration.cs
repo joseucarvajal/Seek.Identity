@@ -12,6 +12,9 @@ namespace SeekQ.Identity.Data.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> configuration)
         {
+            configuration.Property(c => c.EmailConfirmationCode)
+                .HasMaxLength(7);
+
             configuration.Property<int?>("GenderId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasColumnName("GenderId")

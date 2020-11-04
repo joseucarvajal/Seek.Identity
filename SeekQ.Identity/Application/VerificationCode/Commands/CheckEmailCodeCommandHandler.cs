@@ -3,8 +3,8 @@ using App.Common.SeedWork;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using NETCore.MailKit.Core;
 using SeekQ.Identity.Application.Services;
 using SeekQ.Identity.Models;
 using SeekQ.Identity.Twilio;
@@ -15,21 +15,28 @@ using Twilio.Rest.Verify.V2.Service;
 
 namespace SeekQ.Identity.Application.VerificationCode.Commands
 {
-    public class SendEmailVerificationCodeCommandHandler
+    public class CheckEmailCodeCommandHandler
     {
         public class Command : IRequest<ApplicationUser>
         {
+            public Guid UserId { get; set; }
             public string Email { get; set; }
+            public string CodeToVerify { get; set; }
 
-            public Command(string email)
+            public Command(Guid userId, string phoneNumber, string codeToVerify)
             {
-                Email = email;
+                UserId = userId;
+                Email = phoneNumber;                     
+                CodeToVerify = codeToVerify;
             }
 
             public class CommandValidator : AbstractValidator<Command>
             {
                 public CommandValidator(Utils utils)
                 {
+                    RuleFor(x => x.UserId)
+                        .NotNull().NotEmpty().WithMessage("User id is not valid");
+
                     RuleFor(x => x.Email)
                     .Custom((phoneNumberOrEmail, context) =>
                     {
@@ -38,53 +45,56 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                             context.AddFailure("Add a valid email address");
                         }
                     });
+
+                    RuleFor(x => x.CodeToVerify)
+                        .NotNull().NotEmpty().WithMessage("Please enter a verification code")
+                        .Length(6).WithMessage("Verification code should have 6 characters");
                 }
             }
 
             public class Handler : IRequestHandler<Command, ApplicationUser>
             {
-                private readonly TwilioVerifySettings _settings;
+                private readonly UserManager<ApplicationUser> _userManager;
                 private readonly SignUpService _signUpService;
                 private readonly Utils _utils;
-                private readonly IEmailService _emailService;
 
                 public Handler(
-                    IOptions<TwilioVerifySettings> settings, 
-                    SignUpService signUpService,
-                    Utils utils,
-                    IEmailService emailService
+                    UserManager<ApplicationUser> userManager,
+                    SignUpService signUpService,                    
+                    Utils utils
                 )
                 {
-                    _settings = settings.Value;
+                    _userManager = userManager;
                     _signUpService = signUpService;
                     _utils = utils;
-                    _emailService = emailService;
                 }
 
                 public async Task<ApplicationUser> Handle(Command request, CancellationToken cancellationToken)
-                {           
-
-                    //throws and exception is data is not valid
-                    ManualValidateRequest(request);                    
-
+                {
                     try
                     {
-                        ApplicationUser user = await _signUpService.CreateUserFromPhoneOrEmailAsync(request.Email);
-                        await _emailService.SendAsync(
-                            request.Email,
-                            "SeekQ verification code",
-                            $"Hi,<br/>This is your SeekQ sign-up verification code <b>{user.EmailConfirmationCode}</>", true);
-                       
-                        return user;
+                        ManualValidateRequest(request);
+
+                        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+
+                        if(user.EmailConfirmationCode != request.CodeToVerify)
+                        {
+                            throw new AppException("The verification code is not valid. Please try again.");
+                        }
+
+                        return await _signUpService.UpdateUserAsConfirmed(
+                            request.UserId, 
+                            request.Email
+                        );
                     }
-                    catch (AppException) //User already exist
+                    catch (AppException)
                     {                        
                         throw;
                     }
                     catch(Exception e)
                     {
-                        Console.WriteLine(e.StackTrace);
-                        throw new AppException("There was an error. Please verify your phone number and try again.");
+                        Console.WriteLine(e.ToString());
+                        throw new AppException("The verification code is not valid. Please try again.");
                     }                    
                 }
 
