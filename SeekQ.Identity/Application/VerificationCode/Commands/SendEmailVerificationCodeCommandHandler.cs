@@ -11,7 +11,6 @@ using SeekQ.Identity.Twilio;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Twilio.Rest.Verify.V2.Service;
 
 namespace SeekQ.Identity.Application.VerificationCode.Commands
 {
@@ -35,27 +34,24 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                     {
                         if (!utils.IsValidEmail(phoneNumberOrEmail))
                         {
-                            context.AddFailure("Add a valid email address");
+                            context.AddFailure("Please enter a valid email address");
                         }
                     });
                 }
             }
 
             public class Handler : IRequestHandler<Command, ApplicationUser>
-            {
-                private readonly TwilioVerifySettings _settings;
+            {                
                 private readonly SignUpService _signUpService;
                 private readonly Utils _utils;
                 private readonly IEmailService _emailService;
 
                 public Handler(
-                    IOptions<TwilioVerifySettings> settings, 
                     SignUpService signUpService,
                     Utils utils,
                     IEmailService emailService
                 )
                 {
-                    _settings = settings.Value;
                     _signUpService = signUpService;
                     _utils = utils;
                     _emailService = emailService;
@@ -73,12 +69,12 @@ namespace SeekQ.Identity.Application.VerificationCode.Commands
                         await _emailService.SendAsync(
                             request.Email,
                             "SeekQ verification code",
-                            $"Hi,<br/>This is your SeekQ sign-up verification code <b>{user.EmailConfirmationCode}</>", true);
+                            $"Hi,<br/>This is your SeekQ sign-up verification code <b>{user.EmailConfirmationCode}</b><div style='display:flex; justify-content:center'><img src='http://localhost:32700/SeekQ_logo-1.png' style='width:20%'/></div>", true);
                        
                         return user;
                     }
                     catch (AppException) //User already exist
-                    {                        
+                    {                    
                         throw;
                     }
                     catch(Exception e)

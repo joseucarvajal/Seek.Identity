@@ -12,7 +12,7 @@ services:
       ASPNETCORE_ConnectionStrings__MSSQL: "Server=mssqlsrv,1433;Database=SeekQ.Identity;User Id=sa;Password=Password123"
 
       #Email settings
-      ASPNETCORE_Email__Server: "192.168.0.100"
+      ASPNETCORE_Email__Server: "192.168.0.104"
       ASPNETCORE_Email__Port: "25"
       ASPNETCORE_Email__SenderName: "SeekQ"
       ASPNETCORE_Email__SenderEmail: "info@seekq.com"
