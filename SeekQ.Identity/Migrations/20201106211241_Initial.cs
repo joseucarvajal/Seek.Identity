@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SeekQ.Identity.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,7 +22,7 @@ namespace SeekQ.Identity.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserGender",
+                name: "LanguageKnows",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
@@ -30,7 +30,19 @@ namespace SeekQ.Identity.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserGender", x => x.Id);
+                    table.PrimaryKey("PK_LanguageKnows", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserGenders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserGenders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,9 +85,16 @@ namespace SeekQ.Identity.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     EmailConfirmationCode = table.Column<string>(maxLength: 7, nullable: true),
-                    MakeFirstNamePublic = table.Column<bool>(nullable: false),
-                    MakeLastNamePublic = table.Column<bool>(nullable: false),
-                    MakeBirthDatePublic = table.Column<bool>(nullable: false),
+                    MakeFirstNamePublic = table.Column<bool>(nullable: false, defaultValue: true),
+                    MakeLastNamePublic = table.Column<bool>(nullable: false, defaultValue: true),
+                    MakeBirthDatePublic = table.Column<bool>(nullable: false, defaultValue: true),
+                    NickName = table.Column<string>(maxLength: 20, nullable: true),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(maxLength: 50, nullable: true),
+                    BirthDate = table.Column<DateTime>(nullable: true),
+                    School = table.Column<string>(maxLength: 50, nullable: true),
+                    Job = table.Column<string>(maxLength: 50, nullable: true),
+                    About = table.Column<string>(maxLength: 1000, nullable: true),
                     GenderId = table.Column<int>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true)
                 },
@@ -83,9 +102,9 @@ namespace SeekQ.Identity.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_UserGender_GenderId",
+                        name: "FK_AspNetUsers_UserGenders_GenderId",
                         column: x => x.GenderId,
-                        principalTable: "UserGender",
+                        principalTable: "UserGenders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -175,6 +194,32 @@ namespace SeekQ.Identity.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserLanguageKnows",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ApplicationUserId = table.Column<Guid>(nullable: false),
+                    ApplicationUserId1 = table.Column<string>(nullable: true),
+                    LanguageKnowId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLanguageKnows", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserLanguageKnows_AspNetUsers_ApplicationUserId1",
+                        column: x => x.ApplicationUserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserLanguageKnows_LanguageKnows_LanguageKnowId",
+                        column: x => x.LanguageKnowId,
+                        principalTable: "LanguageKnows",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -218,6 +263,16 @@ namespace SeekQ.Identity.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLanguageKnows_ApplicationUserId1",
+                table: "UserLanguageKnows",
+                column: "ApplicationUserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLanguageKnows_LanguageKnowId",
+                table: "UserLanguageKnows",
+                column: "LanguageKnowId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -238,13 +293,19 @@ namespace SeekQ.Identity.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "UserLanguageKnows");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "UserGender");
+                name: "LanguageKnows");
+
+            migrationBuilder.DropTable(
+                name: "UserGenders");
         }
     }
 }

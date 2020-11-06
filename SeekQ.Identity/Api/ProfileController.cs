@@ -2,9 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeekQ.Identity.Application.Profile.Commands;
+using SeekQ.Identity.Application.Profile.Queries;
+using SeekQ.Identity.Application.Profile.ViewModels;
 using SeekQ.Identity.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SeekQ.Identity.Api
@@ -33,5 +37,28 @@ namespace SeekQ.Identity.Api
             return await _mediator.Send(command);
         }
 
+        // POST api/v1/profile
+        [HttpPost]
+        [SwaggerOperation(Summary = "create new user")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "user created succesfully")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Bad Request")]
+        public async Task<ActionResult<ApplicationUser>> CreateUser(
+            [FromBody] CreateUserCommandHandler.Command command
+        )
+        {
+            return await _mediator.Send(command);
+        }
+
+        // PUT api/v1/profile
+        [HttpPut]
+        [SwaggerOperation(Summary = "update an existing user")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "user updated succesfully")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Bad Request")]
+        public async Task<ActionResult<ApplicationUser>> UpdateUser(
+            [FromBody] UpdateUserCommandHandler.Command command
+        )
+        {
+            return await _mediator.Send(command);
+        }
     }
 }

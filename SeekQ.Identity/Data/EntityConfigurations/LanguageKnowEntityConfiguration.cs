@@ -4,10 +4,10 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using Models;
 
-    public class UserGenderEntityConfiguration : IEntityTypeConfiguration<UserGender>
+    public class LanguageKnowEntityConfiguration : IEntityTypeConfiguration<LanguageKnow>
     {
-        public void Configure(EntityTypeBuilder<UserGender> configuration)
-        {            
+        public void Configure(EntityTypeBuilder<LanguageKnow> configuration)
+        {
             configuration.HasKey(g => g.Id);
 
             configuration.Property(g => g.Id)

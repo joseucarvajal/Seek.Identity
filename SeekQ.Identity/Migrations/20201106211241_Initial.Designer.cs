@@ -10,8 +10,8 @@ using SeekQ.Identity.Data;
 namespace SeekQ.Identity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201103201910_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201106211241_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -157,8 +157,15 @@ namespace SeekQ.Identity.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("About")
+                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(1000);
+
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -175,9 +182,21 @@ namespace SeekQ.Identity.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
                     b.Property<int?>("GenderId")
                         .HasColumnName("GenderId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Job")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -186,13 +205,23 @@ namespace SeekQ.Identity.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("MakeBirthDatePublic")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("MakeFirstNamePublic")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("MakeLastNamePublic")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("NickName")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(256)")
@@ -210,6 +239,10 @@ namespace SeekQ.Identity.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("School")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -236,6 +269,21 @@ namespace SeekQ.Identity.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("SeekQ.Identity.Models.LanguageKnow", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LanguageKnows");
+                });
+
             modelBuilder.Entity("SeekQ.Identity.Models.UserGender", b =>
                 {
                     b.Property<int>("Id")
@@ -248,7 +296,31 @@ namespace SeekQ.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserGender");
+                    b.ToTable("UserGenders");
+                });
+
+            modelBuilder.Entity("SeekQ.Identity.Models.UserLanguageKnow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationUserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("LanguageKnowId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId1");
+
+                    b.HasIndex("LanguageKnowId");
+
+                    b.ToTable("UserLanguageKnows");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -307,6 +379,19 @@ namespace SeekQ.Identity.Migrations
                     b.HasOne("SeekQ.Identity.Models.UserGender", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId");
+                });
+
+            modelBuilder.Entity("SeekQ.Identity.Models.UserLanguageKnow", b =>
+                {
+                    b.HasOne("SeekQ.Identity.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("LanguageKnows")
+                        .HasForeignKey("ApplicationUserId1");
+
+                    b.HasOne("SeekQ.Identity.Models.LanguageKnow", "LanguageKnow")
+                        .WithMany("LanguageKnows")
+                        .HasForeignKey("LanguageKnowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
