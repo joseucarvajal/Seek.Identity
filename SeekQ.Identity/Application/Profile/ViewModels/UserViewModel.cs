@@ -4,7 +4,7 @@
 
     public class UserViewModel
     {
-        public Guid IdUser { get; set; }
+        public string IdUser { get; set; }
         public bool MakeFirstNamePublic { get; set; }
         public bool MakeLastNamePublic { get; set; }
         public bool MakeBirthDatePublic { get; set; }

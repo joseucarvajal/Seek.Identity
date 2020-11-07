@@ -16,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
+using SeekQ.Identity.Application.Profile.Commands;
+using SeekQ.Identity.Application.Profile.Queries;
 using SeekQ.Identity.Application.Services;
 using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Data;
@@ -42,6 +44,15 @@ namespace SeekQ.Identity
                     .AddFluentValidation(cfg =>
                     {
                         cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneVerificationCodeCommandHandler>();
+
+                        cfg.RegisterValidatorsFromAssemblyContaining<CreateUserCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<CreateUserLanguageCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<DeleteUserLanguageCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<UpdateUserCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<GetGenderQueryHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<GetLanguageKnowQueryHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<GetUserQueryHandler>();
+
                         cfg.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                     });
                                 
@@ -51,6 +62,27 @@ namespace SeekQ.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(CreateUserCommandHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(CreateUserLanguageCommandHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(DeleteUserLanguageCommandHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(UpdateUserCommandHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(GetGenderQueryHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(GetLanguageKnowQueryHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(GetUserQueryHandler).Assembly);
 
             var builder = services.AddIdentityServer(options =>
             {

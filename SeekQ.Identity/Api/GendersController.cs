@@ -25,7 +25,7 @@ namespace SeekQ.Identity.Api
         // GET api/v1/genders
         [HttpGet]
         [SwaggerOperation(Summary = "get all user genders")]
-        public async Task<IEnumerable<UserGenderViewModel>> GetAllGeders()
+        public async Task<IEnumerable<UserGenderViewModel>> GetAllGenders()
         {
             return await _mediator.Send(new GetGenderQueryHandler.Query());
         }

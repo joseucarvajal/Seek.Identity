@@ -30,13 +30,5 @@ namespace SeekQ.Identity.Api
         {
             return await _mediator.Send(new GetLanguageKnowQueryHandler.Query());
         }
-
-        // DELETE api/v1/user/{5a3e8e31-b2fb-43a7-b275-7464d2931f0e}/language/{2}
-        [Route("user/{userId}/language/{languageId}")]
-        [SwaggerOperation(Summary = "delete user languages")]
-        public async Task<bool> DeleteUserLanguage([FromRoute] Guid userId, [FromRoute] int languageId)
-        {
-            return await _mediator.Send(new DeleteUserLanguageCommandHandler.Command(userId, languageId));
-        }
     }
 }

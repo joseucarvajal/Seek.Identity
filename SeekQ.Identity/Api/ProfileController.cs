@@ -62,11 +62,24 @@ namespace SeekQ.Identity.Api
         }
 
         // GET api/v1/profile/{Id}
-        [HttpGet]
+        [HttpGet("{idUser}")]
         [SwaggerOperation(Summary = "get an existing user")]
-        public async Task<IEnumerable<UserViewModel>> GetUser(Guid Id)
+        public async Task<IEnumerable<UserViewModel>> GetUser(
+            [SwaggerParameter(Description = "UserId is a Guid Type")]
+            [FromRoute]
+            Guid idUser
+        )
         {
-            return await _mediator.Send(new GetUserQueryHandler.Query(Id));
+            return await _mediator.Send(new GetUserQueryHandler.Query(idUser));
+        }
+
+        // DELETE api/v1/profile/{userId}/language/{languageId}
+        [HttpDelete("{idUser}")]
+        [Route("language/{languageId}")]
+        [SwaggerOperation(Summary = "delete user languages")]
+        public async Task<bool> DeleteUserLanguage([FromRoute] Guid idUser, [FromRoute] int languageId)
+        {
+            return await _mediator.Send(new DeleteUserLanguageCommandHandler.Command(idUser, languageId));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace SeekQ.Identity.Application.Profile.Queries
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
@@ -15,7 +16,7 @@
     {
         public class Query : IRequest<IEnumerable<LanguageKnowViewModel>>
         {
-            
+
         }
 
         public class Handler : IRequestHandler<Query, IEnumerable<LanguageKnowViewModel>>
@@ -31,17 +32,24 @@
                 Query query,
                 CancellationToken cancellationToken)
             {
-                using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                try
                 {
-                    string sql =
-                        @"
+                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    {
+                        string sql =
+                            @"
                         SELECT  Id as LanguageKnowId,
                                 Name as LaguageKnowName
-                        FROM LanguageKnow";
+                        FROM LanguageKnows";
 
-                    var result = await conn.QueryAsync<LanguageKnowViewModel>(sql);
+                        var result = await conn.QueryAsync<LanguageKnowViewModel>(sql);
 
-                    return result.AsEnumerable();
+                        return result.AsEnumerable();
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
                 }
             }
         }

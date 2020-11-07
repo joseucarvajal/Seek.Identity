@@ -1,5 +1,6 @@
 ﻿namespace SeekQ.Identity.Application.Profile.Queries
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
@@ -31,17 +32,24 @@
                 Query query,
                 CancellationToken cancellationToken)
             {
-                using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                try
                 {
-                    string sql =
-                        @"
+                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    {
+                        string sql =
+                            @"
                         SELECT  Id as GenderId,
                                 Name as GenderName
-                        FROM UserGender";
+                        FROM UserGenders";
 
-                    var result = await conn.QueryAsync<UserGenderViewModel>(sql);
+                        var result = await conn.QueryAsync<UserGenderViewModel>(sql);
 
-                    return result.AsEnumerable();
+                        return result.AsEnumerable();
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
                 }
             }
         }

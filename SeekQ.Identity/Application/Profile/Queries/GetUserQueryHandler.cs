@@ -39,36 +39,43 @@
             {
                 using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
                 {
-                    string sql =
+                    try
+                    {
+                        string sql =
                         @"
-                        SELECT  Id as IdUser,
-                                MakeFirstNamePublic,
-                                MakeLastNamePublic,
-                                MakeBirthDatePublic,
-                                NickName,
-                                FirstName,
-                                LastName,
-                                Email,
-                                PhoneNumber,
-                                BirthDate,
-                                School,
-                                Job,
-                                About,
-                                GenderId,
-                                ug.Name as GenderName,
-                                lk.LanguageKnowId,
-                                lk.Name as LanguageKnowName
+                            SELECT u.Id as IdUser,
+                            MakeFirstNamePublic,
+                            MakeLastNamePublic,
+                            MakeBirthDatePublic,
+                            NickName,
+                            FirstName,
+                            LastName,
+                            Email,
+                            PhoneNumber,
+                            BirthDate,
+                            School,
+                            Job,
+                            About,
+                            GenderId,
+                            ug.Name as GenderName,
+                            lk.Id as LanguageKnowId,
+                            lk.Name as LanguageKnowName
 
                         FROM AspNetUsers u
-                            INNER JOIN UserGender ug ON u.GenderId = ug.Id
-                            INNER JOIN UserLanguageKnow ulk ON ulk.ApplicationUserId = u.Id
-                            INNER JOIN LanguageKnow lk ON ulk.LanguageKnowId = lk.Id
+                            LEFT JOIN UserGenders ug ON u.GenderId = ug.Id
+                            LEFT JOIN UserLanguageKnows ulk ON ulk.ApplicationUserId = u.Id
+                            LEFT JOIN LanguageKnows lk ON ulk.LanguageKnowId = lk.Id
 
-		                WHERE Id = @IdUser";
+                        WHERE u.Id = @IdUser";
 
-                    var result = await conn.QueryAsync<UserViewModel>(sql, new { query.IdUser });
+                        var result = await conn.QueryAsync<UserViewModel>(sql, new { IdUser = query.IdUser });
 
-                    return result.AsEnumerable();
+                        return result.AsEnumerable();
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
                 }
             }
         }
