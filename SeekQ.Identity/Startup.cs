@@ -18,6 +18,10 @@ using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
 using SeekQ.Identity.Application.Profile.Commands;
 using SeekQ.Identity.Application.Profile.Queries;
+using SeekQ.Identity.Application.Gender.Queries;
+using SeekQ.Identity.Application.UserLanguageKnow.Commands;
+using SeekQ.Identity.Application.Language.Queries;
+using SeekQ.Identity.Application.UserLanguageKnow.Queries;
 using SeekQ.Identity.Application.Services;
 using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Data;
@@ -46,12 +50,13 @@ namespace SeekQ.Identity
                         cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneVerificationCodeCommandHandler>();
 
                         cfg.RegisterValidatorsFromAssemblyContaining<CreateUserCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<CreateUserLanguageCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<DeleteUserLanguageCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<CreateUserLanguageKnowCommandHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<DeleteUserLanguageKnowCommandHandler>();
                         cfg.RegisterValidatorsFromAssemblyContaining<UpdateUserCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<GetGenderQueryHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<GetLanguageKnowQueryHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<GetAllGendersQueryHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<GetAllLanguagesQueryHandler>();
                         cfg.RegisterValidatorsFromAssemblyContaining<GetUserQueryHandler>();
+                        cfg.RegisterValidatorsFromAssemblyContaining<GetUserLanguageKnowCommandHandler>();
 
                         cfg.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                     });
@@ -67,22 +72,25 @@ namespace SeekQ.Identity
                     .AddMediatR(typeof(CreateUserCommandHandler).Assembly);
 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(CreateUserLanguageCommandHandler).Assembly);
+                    .AddMediatR(typeof(CreateUserLanguageKnowCommandHandler).Assembly);
 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(DeleteUserLanguageCommandHandler).Assembly);
+                    .AddMediatR(typeof(DeleteUserLanguageKnowCommandHandler).Assembly);
 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
                     .AddMediatR(typeof(UpdateUserCommandHandler).Assembly);
 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(GetGenderQueryHandler).Assembly);
+                    .AddMediatR(typeof(GetAllGendersQueryHandler).Assembly);
 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(GetLanguageKnowQueryHandler).Assembly);
+                    .AddMediatR(typeof(GetAllLanguagesQueryHandler).Assembly);
 
             services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
                     .AddMediatR(typeof(GetUserQueryHandler).Assembly);
+
+            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
+                    .AddMediatR(typeof(GetUserLanguageKnowCommandHandler).Assembly);
 
             var builder = services.AddIdentityServer(options =>
             {

@@ -1,4 +1,4 @@
-﻿namespace SeekQ.Identity.Application.Profile.ViewModels
+﻿namespace SeekQ.Identity.Application.ViewModels
 {
     public class UserGenderViewModel
     {

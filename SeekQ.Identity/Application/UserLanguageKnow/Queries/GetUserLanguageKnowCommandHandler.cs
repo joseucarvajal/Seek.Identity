@@ -1,4 +1,4 @@
-﻿namespace SeekQ.Identity.Application.Profile.Queries
+﻿namespace SeekQ.Identity.Application.UserLanguageKnow.Queries
 {
     using System;
     using System.Collections.Generic;
@@ -12,9 +12,9 @@
     using Microsoft.Data.SqlClient;
     using System.Linq;
 
-    public class GetUserQueryHandler
+    public class GetUserLanguageKnowCommandHandler
     {
-        public class Query : IRequest<IEnumerable<UserViewModel>>
+        public class Query : IRequest<IEnumerable<UserLanguageViewModel>>
         {
             public Query(Guid idUser)
             {
@@ -24,7 +24,7 @@
             public Guid IdUser { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<UserViewModel>>
+        public class Handler : IRequestHandler<Query, IEnumerable<UserLanguageViewModel>>
         {
             private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
 
@@ -33,7 +33,7 @@
                 _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
             }
 
-            public async Task<IEnumerable<UserViewModel>> Handle(
+            public async Task<IEnumerable<UserLanguageViewModel>> Handle(
                 Query query,
                 CancellationToken cancellationToken)
             {
@@ -44,27 +44,16 @@
                         string sql =
                         @"
                             SELECT u.Id as IdUser,
-                            MakeFirstNamePublic,
-                            MakeLastNamePublic,
-                            MakeBirthDatePublic,
-                            NickName,
-                            FirstName,
-                            LastName,
-                            Email,
-                            PhoneNumber,
-                            BirthDate,
-                            School,
-                            Job,
-                            About,
-                            GenderId,
-                            ug.Name as GenderName
+                            lk.Id as LanguageKnowId,
+                            lk.Name as LanguageKnowName
 
                         FROM AspNetUsers u
-                            LEFT JOIN UserGenders ug ON u.GenderId = ug.Id
+                            INNER JOIN UserLanguageKnows ulk ON ulk.ApplicationUserId = u.Id
+                            INNER JOIN LanguageKnows lk ON ulk.LanguageKnowId = lk.Id
 
                         WHERE u.Id = @IdUser";
 
-                        var result = await conn.QueryAsync<UserViewModel>(sql, new { IdUser = query.IdUser });
+                        var result = await conn.QueryAsync<UserLanguageViewModel>(sql, new { IdUser = query.IdUser });
 
                         return result.AsEnumerable();
                     }

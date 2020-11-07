@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SeekQ.Identity.Application.Profile.Queries;
-using SeekQ.Identity.Application.Profile.ViewModels;
+using SeekQ.Identity.Application.Gender.Queries;
+using SeekQ.Identity.Application.ViewModels;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SeekQ.Identity.Api
@@ -24,10 +24,10 @@ namespace SeekQ.Identity.Api
 
         // GET api/v1/genders
         [HttpGet]
-        [SwaggerOperation(Summary = "get all user genders")]
+        [SwaggerOperation(Summary = "get all available genders")]
         public async Task<IEnumerable<UserGenderViewModel>> GetAllGenders()
         {
-            return await _mediator.Send(new GetGenderQueryHandler.Query());
+            return await _mediator.Send(new GetAllGendersQueryHandler.Query());
         }
     }
 }

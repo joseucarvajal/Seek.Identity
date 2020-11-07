@@ -38,6 +38,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Profile\Queries\" />
-    <Folder Include="Application\Profile\ViewModels\" />
+    <Folder Include="Application\Gender\" />
+    <Folder Include="Application\Gender\Commands\" />
+    <Folder Include="Application\Gender\Queries\" />
+    <Folder Include="Application\ViewModels\" />
+    <Folder Include="Application\Language\" />
+    <Folder Include="Application\Language\Commands\" />
+    <Folder Include="Application\Language\Queries\" />
+    <Folder Include="Application\UserLanguageKnow\" />
+    <Folder Include="Application\UserLanguageKnow\Commands\" />
+    <Folder Include="Application\UserLanguageKnow\Queries\" />
   </ItemGroup>
 </Project>

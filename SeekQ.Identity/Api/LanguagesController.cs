@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SeekQ.Identity.Application.Profile.Commands;
-using SeekQ.Identity.Application.Profile.Queries;
-using SeekQ.Identity.Application.Profile.ViewModels;
+using SeekQ.Identity.Application.Language.Queries;
+using SeekQ.Identity.Application.ViewModels;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SeekQ.Identity.Api
@@ -25,10 +24,10 @@ namespace SeekQ.Identity.Api
 
         // GET api/v1/languages
         [HttpGet]
-        [SwaggerOperation(Summary = "get all user languages")]
+        [SwaggerOperation(Summary = "get all available languages")]
         public async Task<IEnumerable<LanguageKnowViewModel>> GetAllLanguages()
         {
-            return await _mediator.Send(new GetLanguageKnowQueryHandler.Query());
+            return await _mediator.Send(new GetAllLanguagesQueryHandler.Query());
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeekQ.Identity.Application.Profile.Commands;
 using SeekQ.Identity.Application.Profile.Queries;
-using SeekQ.Identity.Application.Profile.ViewModels;
+using SeekQ.Identity.Application.ViewModels;
 using SeekQ.Identity.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -71,15 +70,6 @@ namespace SeekQ.Identity.Api
         )
         {
             return await _mediator.Send(new GetUserQueryHandler.Query(idUser));
-        }
-
-        // DELETE api/v1/profile/{userId}/language/{languageId}
-        [HttpDelete("{idUser}")]
-        [Route("language/{languageId}")]
-        [SwaggerOperation(Summary = "delete user languages")]
-        public async Task<bool> DeleteUserLanguage([FromRoute] Guid idUser, [FromRoute] int languageId)
-        {
-            return await _mediator.Send(new DeleteUserLanguageCommandHandler.Command(idUser, languageId));
         }
     }
 }

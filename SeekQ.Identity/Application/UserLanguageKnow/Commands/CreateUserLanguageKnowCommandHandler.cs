@@ -1,4 +1,4 @@
-﻿namespace SeekQ.Identity.Application.Profile.Commands
+﻿namespace SeekQ.Identity.Application.UserLanguageKnow.Commands
 {
     using System;
     using System.Linq;
@@ -10,9 +10,9 @@
     using Microsoft.AspNetCore.Identity;
     using SeekQ.Identity.Data;
     using SeekQ.Identity.Models;
-    using SeekQ.Identity.Application.Profile.ViewModels;
+    using SeekQ.Identity.Application.ViewModels;
 
-    public class CreateUserLanguageCommandHandler
+    public class CreateUserLanguageKnowCommandHandler
     {
         public class Command : IRequest<UserLanguageKnow>
         {

@@ -1,4 +1,4 @@
-﻿namespace SeekQ.Identity.Application.Profile.Queries
+﻿namespace SeekQ.Identity.Application.Gender.Queries
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,7 @@
     using Microsoft.Data.SqlClient;
     using ViewModels;
 
-    public class GetGenderQueryHandler
+    public class GetAllGendersQueryHandler
     {
         public class Query : IRequest<IEnumerable<UserGenderViewModel>>
         {

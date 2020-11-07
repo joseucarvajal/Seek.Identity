@@ -1,4 +1,4 @@
-﻿namespace SeekQ.Identity.Application.Profile.Commands
+﻿namespace SeekQ.Identity.Application.UserLanguageKnow.Commands
 {
     using System;
     using System.Linq;
@@ -11,7 +11,7 @@
     using SeekQ.Identity.Data;
     using SeekQ.Identity.Models;
 
-    public class DeleteUserLanguageCommandHandler
+    public class DeleteUserLanguageKnowCommandHandler
     {
         public class Command : IRequest<bool>
         {
