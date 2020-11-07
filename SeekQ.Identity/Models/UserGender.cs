@@ -4,7 +4,7 @@ namespace SeekQ.Identity.Models
 {
     public class UserGender : Enumeration
     {
-        public static UserGender Female = new UserGender(1, "Female");
+        public static UserGender Female = new UserGender(1, "Male");
         public static UserGender Male = new UserGender(2, "Female");
         public static UserGender Agender = new UserGender(3, "Agender");
         public static UserGender Androgyne = new UserGender(4, "Androgyne");

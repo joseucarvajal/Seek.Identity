@@ -60,5 +60,13 @@ namespace SeekQ.Identity.Api
         {
             return await _mediator.Send(command);
         }
+
+        // GET api/v1/profile/{Id}
+        [HttpGet]
+        [SwaggerOperation(Summary = "get an existing user")]
+        public async Task<IEnumerable<UserViewModel>> GetUser(Guid Id)
+        {
+            return await _mediator.Send(new GetUserQueryHandler.Query(Id));
+        }
     }
 }
