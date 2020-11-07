@@ -199,16 +199,15 @@ namespace SeekQ.Identity.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    ApplicationUserId = table.Column<Guid>(nullable: false),
-                    ApplicationUserId1 = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<string>(nullable: true),
                     LanguageKnowId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserLanguageKnows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserLanguageKnows_AspNetUsers_ApplicationUserId1",
-                        column: x => x.ApplicationUserId1,
+                        name: "FK_UserLanguageKnows_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -265,9 +264,9 @@ namespace SeekQ.Identity.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserLanguageKnows_ApplicationUserId1",
+                name: "IX_UserLanguageKnows_ApplicationUserId",
                 table: "UserLanguageKnows",
-                column: "ApplicationUserId1");
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLanguageKnows_LanguageKnowId",

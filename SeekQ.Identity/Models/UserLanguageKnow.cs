@@ -5,7 +5,7 @@
 
     public class UserLanguageKnow : BaseEntity
     {
-        public Guid ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
         public int LanguageKnowId { get; set; }

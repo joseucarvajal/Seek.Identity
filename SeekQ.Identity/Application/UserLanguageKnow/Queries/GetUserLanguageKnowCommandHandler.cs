@@ -43,9 +43,8 @@
                     {
                         string sql =
                         @"
-                            SELECT u.Id as IdUser,
-                            lk.Id as LanguageKnowId,
-                            lk.Name as LanguageKnowName
+                            SELECT  lk.Id as LanguageKnowId,
+                                    lk.Name as LanguageKnowName
 
                         FROM AspNetUsers u
                             INNER JOIN UserLanguageKnows ulk ON ulk.ApplicationUserId = u.Id

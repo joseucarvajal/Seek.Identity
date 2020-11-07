@@ -13,7 +13,10 @@
 
             configuration.HasIndex(u => new { u.LanguageKnowId, u.ApplicationUserId }).IsUnique();
 
-            configuration.Property<Guid>("ApplicationUserId")
+            configuration.Property(c => c.Id)
+                .HasDefaultValueSql("NEWID()");
+
+            configuration.Property<string>("ApplicationUserId")
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasColumnName("ApplicationUserId")
                 .IsRequired();

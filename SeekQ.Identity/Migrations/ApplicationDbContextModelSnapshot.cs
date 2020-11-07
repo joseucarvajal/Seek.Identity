@@ -303,10 +303,7 @@ namespace SeekQ.Identity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ApplicationUserId1")
+                    b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("LanguageKnowId")
@@ -314,7 +311,7 @@ namespace SeekQ.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId1");
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("LanguageKnowId");
 
@@ -383,7 +380,7 @@ namespace SeekQ.Identity.Migrations
                 {
                     b.HasOne("SeekQ.Identity.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("LanguageKnows")
-                        .HasForeignKey("ApplicationUserId1");
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("SeekQ.Identity.Models.LanguageKnow", "LanguageKnow")
                         .WithMany("LanguageKnows")

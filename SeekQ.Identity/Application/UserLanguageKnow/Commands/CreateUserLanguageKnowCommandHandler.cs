@@ -16,7 +16,7 @@
     {
         public class Command : IRequest<UserLanguageKnow>
         {
-            public Guid ApplicationUserId { get; set; }
+            public string ApplicationUserId { get; set; }
             public int LanguageKnowId { get; set; }
         }
 
@@ -39,7 +39,7 @@
 
             public async Task<UserLanguageKnow> Handle(Command request, CancellationToken cancellationToken)
             {
-                Guid ApplicationUserId = request.ApplicationUserId;
+                string ApplicationUserId = request.ApplicationUserId;
                 int LanguageKnowId = request.LanguageKnowId;
 
                 var obj = await _dbContext.UserLanguageKnows.FindAsync(request.ApplicationUserId, request.LanguageKnowId);
