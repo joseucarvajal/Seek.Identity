@@ -1,27 +1,31 @@
 ﻿namespace SeekQ.Identity.Application.UserLanguageKnow.Commands
 {
     using System;
+    using System.Data;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using App.Common.Exceptions;
+    using App.Common.SeedWork;
+    using Dapper;
+    using Dapper.Contrib.Extensions;
     using FluentValidation;
     using MediatR;
-    using Microsoft.AspNetCore.Identity;
-    using SeekQ.Identity.Data;
+    using Microsoft.Data.SqlClient;
+    using SeekQ.Identity.Application.ViewModels;
     using SeekQ.Identity.Models;
 
     public class DeleteUserLanguageKnowCommandHandler
     {
         public class Command : IRequest<bool>
         {
-            public Command(Guid userId, int languageKnowId)
+            public Command(string userId, int languageKnowId)
             {
-                UserId = userId;
+                ApplicationUserId = userId;
                 LanguageKnowId = languageKnowId;
             }
 
-            public Guid UserId { get; set; }
+            public string ApplicationUserId { get; set; }
             public int LanguageKnowId { get; set; }
         }
 
@@ -35,25 +39,39 @@
 
         public class Handler : IRequestHandler<Command, bool>
         {
-            private ApplicationDbContext _dbContext;
+            private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
 
-            public Handler(ApplicationDbContext dbContext)
+            public Handler(CommonGlobalAppSingleSettings commonGlobalAppSingleSettings)
             {
-                _dbContext = dbContext;
+                _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
             }
 
             public async Task<bool> Handle(Command request, CancellationToken cancellationToken)
             {
-                var obj = await _dbContext.UserLanguageKnows.FindAsync(request.UserId, request.LanguageKnowId);
-
-                if (obj == null)
+                try
                 {
-                    throw new AppException("User Language does not exists.");
+                    string ApplicationUserId = request.ApplicationUserId;
+                    int LanguageKnowId = request.LanguageKnowId;
+
+                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    {
+                        string sql = @"SELECT ulk.Id
+                                        FROM UserLanguageKnows ulk
+                                                INNER JOIN LanguageKnows lk ON ulk.LanguageKnowId = lk.Id
+                                        WHERE ApplicationUserId = @ApplicationUserId
+                                        AND   LanguageKnowId = @LanguageKnowId";
+                        var result = await conn.QueryAsync<Guid>(sql, new { ApplicationUserId, LanguageKnowId });
+
+                        if (result.ToList().Count == 0) return false;
+
+                        var isSuccess = conn.Delete(new UserLanguageKnow { Id = result.FirstOrDefault() });
+                        return isSuccess;
+                    }
                 }
-
-                _dbContext.UserLanguageKnows.Remove(obj);
-
-                return await _dbContext.SaveChangesAsync() > 0;
+                catch
+                {
+                    return false;
+                }
             }
         }
     }

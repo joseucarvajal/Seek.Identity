@@ -14,12 +14,12 @@
 
     public class GetAllLanguagesQueryHandler
     {
-        public class Query : IRequest<IEnumerable<LanguageKnowViewModel>>
+        public class Query : IRequest<IEnumerable<LanguageViewModel>>
         {
 
         }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<LanguageKnowViewModel>>
+        public class Handler : IRequestHandler<Query, IEnumerable<LanguageViewModel>>
         {
             private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
 
@@ -28,7 +28,7 @@
                 _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
             }
 
-            public async Task<IEnumerable<LanguageKnowViewModel>> Handle(
+            public async Task<IEnumerable<LanguageViewModel>> Handle(
                 Query query,
                 CancellationToken cancellationToken)
             {
@@ -38,11 +38,11 @@
                     {
                         string sql =
                             @"
-                        SELECT  Id as LanguageKnowId,
-                                Name as LaguageKnowName
+                        SELECT  Id as LanguageId,
+                                Name as LanguageName
                         FROM LanguageKnows";
 
-                        var result = await conn.QueryAsync<LanguageKnowViewModel>(sql);
+                        var result = await conn.QueryAsync<LanguageViewModel>(sql);
 
                         return result.AsEnumerable();
                     }

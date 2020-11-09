@@ -17,9 +17,6 @@
         public string Job { get; set; }
         public string About { get; set; }
         public string PhoneNumber { get; set; }
-        public int GenderId { get; set; }
-        public int GenderName { get; set; }
-        public int LanguageKnowId { get; set; }
-        public int LanguageKnowName { get; set; }
+        public int? GenderId { get; set; }
     }
 }

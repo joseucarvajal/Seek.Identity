@@ -25,7 +25,7 @@ namespace SeekQ.Identity.Api
         // GET api/v1/languages
         [HttpGet]
         [SwaggerOperation(Summary = "get all available languages")]
-        public async Task<IEnumerable<LanguageKnowViewModel>> GetAllLanguages()
+        public async Task<IEnumerable<LanguageViewModel>> GetAllLanguages()
         {
             return await _mediator.Send(new GetAllLanguagesQueryHandler.Query());
         }

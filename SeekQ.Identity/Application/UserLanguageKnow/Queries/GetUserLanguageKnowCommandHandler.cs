@@ -14,17 +14,17 @@
 
     public class GetUserLanguageKnowCommandHandler
     {
-        public class Query : IRequest<IEnumerable<UserLanguageViewModel>>
+        public class Query : IRequest<IEnumerable<UserLanguageKnowViewModel>>
         {
-            public Query(Guid idUser)
+            public Query(Guid userId)
             {
-                IdUser = idUser;
+                UserId = userId;
             }
 
-            public Guid IdUser { get; set; }
+            public Guid UserId { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<UserLanguageViewModel>>
+        public class Handler : IRequestHandler<Query, IEnumerable<UserLanguageKnowViewModel>>
         {
             private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
 
@@ -33,7 +33,7 @@
                 _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
             }
 
-            public async Task<IEnumerable<UserLanguageViewModel>> Handle(
+            public async Task<IEnumerable<UserLanguageKnowViewModel>> Handle(
                 Query query,
                 CancellationToken cancellationToken)
             {
@@ -52,7 +52,7 @@
 
                         WHERE u.Id = @IdUser";
 
-                        var result = await conn.QueryAsync<UserLanguageViewModel>(sql, new { IdUser = query.IdUser });
+                        var result = await conn.QueryAsync<UserLanguageKnowViewModel>(sql, new { IdUser = query.UserId });
 
                         return result.AsEnumerable();
                     }

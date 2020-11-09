@@ -25,36 +25,36 @@ namespace SeekQ.Identity.Api
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        // GET api/v1/userlanguage/{Id}
-        [HttpGet("{idUser}")]
+        // GET api/v1/userlanguageknow/{Id}
+        [HttpGet("{userId}")]
         [SwaggerOperation(Summary = "get all know languages user")]
-        public async Task<IEnumerable<UserLanguageViewModel>> GetUser(
+        public async Task<IEnumerable<UserLanguageKnowViewModel>> GetUser(
             [SwaggerParameter(Description = "UserId is a Guid Type")]
             [FromRoute]
-            Guid idUser
+            Guid userId
         )
         {
-            return await _mediator.Send(new GetUserLanguageKnowCommandHandler.Query(idUser));
+            return await _mediator.Send(new GetUserLanguageKnowCommandHandler.Query(userId));
         }
 
-        // POST api/v1/userlanguage
+        // POST api/v1/userlanguageknow
         [HttpPost]
         [SwaggerOperation(Summary = "add new language to a user")]
         [SwaggerResponse((int)HttpStatusCode.OK, "user language created succesfully")]
         [SwaggerResponse((int)HttpStatusCode.BadRequest, "Bad Request")]
-        public async Task<ActionResult<UserLanguageKnow>> CreateUserLanguage(
+        public async Task<ActionResult<UserLanguageKnowViewModel>> CreateUserLanguage(
             [FromBody] CreateUserLanguageKnowCommandHandler.Command command
         )
         {
             return await _mediator.Send(command);
         }
 
-        // DELETE api/v1/userlanguage/{userId}/language/{languageId}
+        // DELETE api/v1/userlanguageknow/{userId}/language/{languageId}
         [HttpDelete("{userId}/language/{languageId}")]
         [SwaggerOperation(Summary = "delete language to a user")]
-        public async Task<bool> DeleteUserLanguage([FromRoute] Guid idUser, [FromRoute] int languageId)
+        public async Task<bool> DeleteUserLanguage([FromRoute] string userId, [FromRoute] int languageId)
         {
-            return await _mediator.Send(new DeleteUserLanguageKnowCommandHandler.Command(idUser, languageId));
+            return await _mediator.Send(new DeleteUserLanguageKnowCommandHandler.Command(userId, languageId));
         }
     }
 }

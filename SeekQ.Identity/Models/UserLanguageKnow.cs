@@ -1,6 +1,5 @@
 ﻿namespace SeekQ.Identity.Models
 {
-    using System;
     using App.Common.Repository;
 
     public class UserLanguageKnow : BaseEntity

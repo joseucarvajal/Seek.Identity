@@ -1,14 +1,15 @@
 ﻿namespace SeekQ.Identity.Application.Profile.Commands
 {
     using System;
-    using System.Linq;
+    using System.Data;
     using System.Threading;
     using System.Threading.Tasks;
-    using App.Common.Exceptions;
+    using App.Common.SeedWork;
+    using Dapper;
+    using Dapper.Contrib.Extensions;
     using FluentValidation;
     using MediatR;
-    using Microsoft.AspNetCore.Identity;
-    using SeekQ.Identity.Data;
+    using Microsoft.Data.SqlClient;
     using SeekQ.Identity.Models;
 
     public class UpdateUserCommandHandler
@@ -37,72 +38,91 @@
         {
             public CommandValidator()
             {
-                RuleFor(x => x.NickName)
-                    .NotNull().NotEmpty().WithMessage("NickName is required")
-                    .MaximumLength(20).WithMessage("NickName cannot have more than 50 characters.");
 
-                RuleFor(x => x.FirstName)
-                    .NotNull().NotEmpty().WithMessage("FirstName is required")
-                    .MaximumLength(50).WithMessage("FirstName cannot have more than 50 characters.");
-
-                RuleFor(x => x.LastName)
-                    .NotNull().NotEmpty().WithMessage("LastName is required")
-                    .MaximumLength(50).WithMessage("LastName cannot have more than 50 characters.");
-
-                RuleFor(x => x.School)
-                    .NotNull().NotEmpty().WithMessage("School is required")
-                    .MaximumLength(50).WithMessage("School cannot have more than 50 characters.");
-
-                RuleFor(x => x.Job)
-                    .NotNull().NotEmpty().WithMessage("Job is required")
-                    .MaximumLength(50).WithMessage("Job cannot have more than 50 characters.");
-
-                RuleFor(x => x.About)
-                    .NotNull().NotEmpty().WithMessage("About is required")
-                    .MaximumLength(1000).WithMessage("About cannot have more than 50 characters.");
             }
         }
 
         public class Handler : IRequestHandler<Command, ApplicationUser>
         {
-            private UserManager<ApplicationUser> _userManager;
+            private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
 
-            public Handler(UserManager<ApplicationUser> userManager)
+            public Handler(CommonGlobalAppSingleSettings commonGlobalAppSingleSettings)
             {
-                _userManager = userManager;
+                _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
             }
 
             public async Task<ApplicationUser> Handle(Command request, CancellationToken cancellationToken)
             {
-                bool MakeFirstNamePublic = request.MakeFirstNamePublic;
-                bool MakeLastNamePublic = request.MakeLastNamePublic;
-                bool MakeBirthDatePublic = request.MakeBirthDatePublic;
-                string NickName = request.NickName;
-                string FirstName = request.FirstName;
-                DateTime BirthDate = request.BirthDate;
-                string School = request.School;
-                string Job = request.Job;
-                string About = request.About;
-
-                ApplicationUser user = await _userManager.FindByIdAsync(request.UserId.ToString());
-                user.MakeFirstNamePublic = MakeFirstNamePublic;
-                user.MakeLastNamePublic = MakeLastNamePublic;
-                user.MakeBirthDatePublic = MakeBirthDatePublic;
-                user.NickName = NickName;
-                user.FirstName = FirstName;
-                user.BirthDate = BirthDate;
-                user.School = School;
-                user.Job = Job;
-                user.About = About;
-
-                var result = await _userManager.UpdateAsync(user);
-
-                if (result.Succeeded == false)
+                try
                 {
-                    throw new AppException(result.Errors.ElementAt(0).Description);
-                }
+                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    {
+                        string UserId = request.UserId.ToString();
+                        bool MakeFirstNamePublic = request.MakeFirstNamePublic;
+                        bool MakeLastNamePublic = request.MakeLastNamePublic;
+                        bool MakeBirthDatePublic = request.MakeBirthDatePublic;
+                        string NickName = request.NickName;
+                        string FirstName = request.FirstName;
+                        string LastName = request.LastName;
+                        DateTime BirthDate = request.BirthDate;
+                        string School = request.School;
+                        string Job = request.Job;
+                        string About = request.About;
+                        int? GenderId = request.GenderId;
 
-                return user;
+                        ApplicationUser user = new ApplicationUser
+                        {
+                            Id = UserId,
+                            MakeFirstNamePublic = MakeFirstNamePublic,
+                            MakeLastNamePublic = MakeLastNamePublic,
+                            MakeBirthDatePublic = MakeBirthDatePublic,
+                            NickName = NickName,
+                            FirstName = FirstName,
+                            LastName = LastName,
+                            BirthDate = BirthDate,
+                            School = School,
+                            Job = Job,
+                            About = About,
+                            GenderId = GenderId
+                        };
+
+                        var result = await conn.ExecuteAsync(
+                            @"Update AspNetUsers
+                                set MakeFirstNamePublic = @MakeFirstNamePublic,
+                                    MakeLastNamePublic = @MakeLastNamePublic,
+                                    MakeBirthDatePublic = @MakeBirthDatePublic,
+                                    NickName = @NickName,
+                                    FirstName = @FirstName,
+                                    LastName = @LastName,
+                                    BirthDate = @BirthDate,
+                                    School = @School,
+                                    Job = @Job,
+                                    About = @About,
+                                    GenderId = @GenderId
+                                where Id = @UserId"
+                            , new
+                            {
+                                UserId,
+                                MakeFirstNamePublic,
+                                MakeLastNamePublic,
+                                MakeBirthDatePublic,
+                                NickName,
+                                FirstName,
+                                LastName,
+                                BirthDate,
+                                School,
+                                Job,
+                                About,
+                                GenderId
+                            });
+
+                        return user;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
         }
     }

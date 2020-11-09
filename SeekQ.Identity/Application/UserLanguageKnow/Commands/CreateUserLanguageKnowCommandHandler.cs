@@ -1,20 +1,23 @@
 ﻿namespace SeekQ.Identity.Application.UserLanguageKnow.Commands
 {
     using System;
+    using System.Data;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using App.Common.Exceptions;
+    using App.Common.SeedWork;
+    using Dapper;
+    using Dapper.Contrib.Extensions;
     using FluentValidation;
     using MediatR;
-    using Microsoft.AspNetCore.Identity;
-    using SeekQ.Identity.Data;
-    using SeekQ.Identity.Models;
-    using SeekQ.Identity.Application.ViewModels;
+    using Microsoft.Data.SqlClient;
+    using ViewModels;
+    using Models;
 
     public class CreateUserLanguageKnowCommandHandler
     {
-        public class Command : IRequest<UserLanguageKnow>
+        public class Command : IRequest<UserLanguageKnowViewModel>
         {
             public string ApplicationUserId { get; set; }
             public int LanguageKnowId { get; set; }
@@ -24,39 +27,45 @@
         {
             public CommandValidator()
             {
-                
+
             }
         }
 
-        public class Handler : IRequestHandler<Command, UserLanguageKnow>
+        public class Handler : IRequestHandler<Command, UserLanguageKnowViewModel>
         {
-            private ApplicationDbContext _dbContext;
+            private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
 
-            public Handler(ApplicationDbContext dbContext)
+            public Handler(CommonGlobalAppSingleSettings commonGlobalAppSingleSettings)
             {
-                _dbContext = dbContext;
+                _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
             }
 
-            public async Task<UserLanguageKnow> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<UserLanguageKnowViewModel> Handle(Command request, CancellationToken cancellationToken)
             {
-                string ApplicationUserId = request.ApplicationUserId;
-                int LanguageKnowId = request.LanguageKnowId;
-
-                var obj = await _dbContext.UserLanguageKnows.FindAsync(request.ApplicationUserId, request.LanguageKnowId);
-
-                if (obj != null)
+                try
                 {
-                    throw new AppException("Language has been registered to user alredy.");
+                    string ApplicationUserId = request.ApplicationUserId;
+                    int LanguageKnowId = request.LanguageKnowId;
+
+                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    {
+                        UserLanguageKnowViewModel userLanguageKnow = new UserLanguageKnowViewModel
+                        {
+                            ApplicationUserId = ApplicationUserId,
+                            LanguageKnowId = LanguageKnowId
+                        };
+
+                        string insert = @"Insert Into UserLanguageKnows (Id, ApplicationUserId, LanguageKnowId)
+                                            Values (@Id, @ApplicationUserId, @LanguageKnowId);";
+                        var result = await conn.ExecuteAsync(insert, new { Id = Guid.NewGuid(), ApplicationUserId, LanguageKnowId });
+
+                        return userLanguageKnow;
+                    }
                 }
-
-                UserLanguageKnow userLanguage = new UserLanguageKnow();
-                userLanguage.LanguageKnowId = LanguageKnowId;
-                userLanguage.ApplicationUserId = ApplicationUserId;
-
-                _dbContext.UserLanguageKnows.Add(userLanguage);
-                await _dbContext.SaveChangesAsync();
-
-                return userLanguage;
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
         }
     }
