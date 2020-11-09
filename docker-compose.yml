@@ -4,12 +4,12 @@ services:
   seekq.identity:
     image: ${DOCKER_REGISTRY-}seekqidentity
     ports:
-      - "32700:80"
+      - "32701:80"
     build:
       context: .
       dockerfile: SeekQ.Identity/Dockerfile
     environment:
-      ASPNETCORE_ConnectionStrings__MSSQL: "Server=mssqlsrv,1433;Database=SeekQ.Identity;User Id=sa;Password=Password123"
+      ASPNETCORE_ConnectionStrings__MSSQL: "Server=seekq.mssql,1433;Database=SeekQ.Identity;User Id=sa;Password=Password123"
 
       #Email settings
       ASPNETCORE_Email__Server: "192.168.0.104"
@@ -17,16 +17,7 @@ services:
       ASPNETCORE_Email__SenderName: "SeekQ"
       ASPNETCORE_Email__SenderEmail: "info@seekq.com"
 
-    depends_on:
-      - mssqlsrv
-
-  #ports: host:container
-  mssqlsrv:
-    image: "mcr.microsoft.com/mssql/server:2017-latest"
-    container_name: SeekQDb
-    ports:
-      - "1433:1433"
-    environment:
-      SA_PASSWORD: "Password123"
-      ACCEPT_EULA: "Y"
-
+networks:
+  default:
+    external:
+      name: SEEKQ_NETWORK
