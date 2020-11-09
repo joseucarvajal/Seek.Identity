@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SeekQ.Identity.Data.EntityConfigurations;
 using SeekQ.Identity.Models;
+using SeekQ.Identity.Models.Profile;
 
 namespace SeekQ.Identity.Data
 {

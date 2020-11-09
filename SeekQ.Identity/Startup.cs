@@ -16,18 +16,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
-using SeekQ.Identity.Application.Profile.Commands;
-using SeekQ.Identity.Application.Profile.Queries;
-using SeekQ.Identity.Application.Gender.Queries;
-using SeekQ.Identity.Application.UserLanguageKnow.Commands;
-using SeekQ.Identity.Application.Language.Queries;
-using SeekQ.Identity.Application.UserLanguageKnow.Queries;
 using SeekQ.Identity.Application.Services;
 using SeekQ.Identity.Application.VerificationCode.Commands;
 using SeekQ.Identity.Data;
 using SeekQ.Identity.Models;
 using SeekQ.Identity.Twilio;
 using Twilio;
+using SeekQ.Identity.Application.Profile.Gender.Queries;
+using SeekQ.Identity.Application.Profile.Language.Queries;
+using SeekQ.Identity.Application.Profile.Profile.Commands;
+using SeekQ.Identity.Application.Profile.Profile.Queries;
+using SeekQ.Identity.Application.Profile.UserLanguageKnow.Commands;
+using SeekQ.Identity.Application.Profile.UserLanguageKnow.Queries;
 
 namespace SeekQ.Identity
 {

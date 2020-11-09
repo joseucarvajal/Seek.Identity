@@ -2,7 +2,7 @@
 {
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using Models;
+    using Models.Profile;
 
     public class UserGenderEntityConfiguration : IEntityTypeConfiguration<UserGender>
     {

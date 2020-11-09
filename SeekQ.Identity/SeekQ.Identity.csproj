@@ -37,16 +37,17 @@
     <ProjectReference Include="..\..\App.Common\App.Common\App.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Application\Profile\Queries\" />
-    <Folder Include="Application\Gender\" />
-    <Folder Include="Application\Gender\Commands\" />
-    <Folder Include="Application\Gender\Queries\" />
-    <Folder Include="Application\ViewModels\" />
-    <Folder Include="Application\Language\" />
-    <Folder Include="Application\Language\Commands\" />
-    <Folder Include="Application\Language\Queries\" />
-    <Folder Include="Application\UserLanguageKnow\" />
-    <Folder Include="Application\UserLanguageKnow\Commands\" />
-    <Folder Include="Application\UserLanguageKnow\Queries\" />
+    <Folder Include="Api\Profile\" />
+    <Folder Include="Api\VerificationCode\" />
+    <Folder Include="Application\Profile\" />
+    <Folder Include="Application\Profile\Gender\" />
+    <Folder Include="Application\Profile\Language\" />
+    <Folder Include="Application\Profile\Profile\" />
+    <Folder Include="Application\Profile\UserLanguageKnow\" />
+    <Folder Include="Application\Profile\UserLanguageKnow\ViewModel\" />
+    <Folder Include="Application\Profile\Profile\ViewModel\" />
+    <Folder Include="Application\Profile\Language\ViewModel\" />
+    <Folder Include="Application\Profile\Gender\ViewModel\" />
+    <Folder Include="Models\Profile\" />
   </ItemGroup>
 </Project>

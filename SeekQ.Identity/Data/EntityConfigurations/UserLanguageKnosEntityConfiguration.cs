@@ -1,9 +1,8 @@
 ﻿namespace SeekQ.Identity.Data.EntityConfigurations
 {
-    using System;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using Models;
+    using Models.Profile;
 
     public class UserLanguageKnowEntityConfiguration : IEntityTypeConfiguration<UserLanguageKnow>
     {

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using IdentityModel;
 using SeekQ.Identity.Data;
 using SeekQ.Identity.Models;
+using SeekQ.Identity.Models.Profile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
