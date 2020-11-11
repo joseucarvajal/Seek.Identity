@@ -1,17 +1,13 @@
 ﻿namespace SeekQ.Identity.Application.Profile.UserLanguageKnow.Commands
 {
     using System;
-    using System.Data;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using App.Common.SeedWork;
-    using Dapper;
-    using Dapper.Contrib.Extensions;
+    using App.Common.Exceptions;
     using FluentValidation;
     using MediatR;
-    using Microsoft.Data.SqlClient;
-    using Models.Profile;
+    using Microsoft.EntityFrameworkCore;
+    using SeekQ.Identity.Data;
 
     public class DeleteUserLanguageKnowCommandHandler
     {
@@ -31,17 +27,17 @@
         {
             public CommandValidator()
             {
-                
+
             }
         }
 
         public class Handler : IRequestHandler<Command, bool>
         {
-            private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
+            private ApplicationDbContext _applicationDbContext;
 
-            public Handler(CommonGlobalAppSingleSettings commonGlobalAppSingleSettings)
+            public Handler(ApplicationDbContext applicationDbContext)
             {
-                _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
+                _applicationDbContext = applicationDbContext;
             }
 
             public async Task<bool> Handle(Command request, CancellationToken cancellationToken)
@@ -51,24 +47,23 @@
                     string ApplicationUserId = request.ApplicationUserId;
                     int LanguageKnowId = request.LanguageKnowId;
 
-                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    var existingUserLanguageKnow = await _applicationDbContext.UserLanguageKnows
+                                                    .AsNoTracking()
+                                                    .SingleOrDefaultAsync(u => u.ApplicationUserId == ApplicationUserId && u.LanguageKnowId == LanguageKnowId);
+
+                    if (existingUserLanguageKnow == null)
                     {
-                        string sql = @"SELECT ulk.Id
-                                        FROM UserLanguageKnows ulk
-                                                INNER JOIN LanguageKnows lk ON ulk.LanguageKnowId = lk.Id
-                                        WHERE ApplicationUserId = @ApplicationUserId
-                                        AND   LanguageKnowId = @LanguageKnowId";
-                        var result = await conn.QueryAsync<Guid>(sql, new { ApplicationUserId, LanguageKnowId });
-
-                        if (result.ToList().Count == 0) return false;
-
-                        var isSuccess = conn.Delete(new UserLanguageKnow { Id = result.FirstOrDefault() });
-                        return isSuccess;
+                        throw new AppException($"The UserId {ApplicationUserId} doesn't have the LanguageKnowId {LanguageKnowId}.");
                     }
+
+                    _applicationDbContext.UserLanguageKnows.Remove(existingUserLanguageKnow);
+                    await _applicationDbContext.SaveChangesAsync();
+
+                    return true;
                 }
-                catch
+                catch (Exception e)
                 {
-                    return false;
+                    throw new AppException(e.Message);
                 }
             }
         }

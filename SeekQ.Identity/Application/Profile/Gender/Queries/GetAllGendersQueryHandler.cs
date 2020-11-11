@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using App.Common.Exceptions;
     using App.Common.SeedWork;
     using Dapper;
     using MediatR;
@@ -49,7 +50,7 @@
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                    throw new AppException(e.Message);
                 }
             }
         }

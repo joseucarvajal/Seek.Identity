@@ -1,16 +1,17 @@
 ﻿namespace SeekQ.Identity.Application.Profile.Profile.Commands
 {
     using System;
-    using System.Data;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using App.Common.SeedWork;
-    using Dapper;
+    using App.Common.Exceptions;
     using FluentValidation;
     using MediatR;
-    using Microsoft.Data.SqlClient;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
     using Models;
     using Models.Profile;
+    using SeekQ.Identity.Data;
 
     public class UpdateUserCommandHandler
     {
@@ -44,84 +45,62 @@
 
         public class Handler : IRequestHandler<Command, ApplicationUser>
         {
-            private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
+            private UserManager<ApplicationUser> _userManager;
 
-            public Handler(CommonGlobalAppSingleSettings commonGlobalAppSingleSettings)
+            public Handler(UserManager<ApplicationUser> userManager)
             {
-                _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
+                _userManager = userManager;
             }
 
             public async Task<ApplicationUser> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    string UserId = request.UserId.ToString();
+
+                    var existingUser = await _userManager.FindByIdAsync(UserId);
+
+                    if (existingUser == null)
                     {
-                        string UserId = request.UserId.ToString();
-                        bool MakeFirstNamePublic = request.MakeFirstNamePublic;
-                        bool MakeLastNamePublic = request.MakeLastNamePublic;
-                        bool MakeBirthDatePublic = request.MakeBirthDatePublic;
-                        string NickName = request.NickName;
-                        string FirstName = request.FirstName;
-                        string LastName = request.LastName;
-                        DateTime BirthDate = request.BirthDate;
-                        string School = request.School;
-                        string Job = request.Job;
-                        string About = request.About;
-                        int? GenderId = request.GenderId;
-
-                        ApplicationUser user = new ApplicationUser
-                        {
-                            Id = UserId,
-                            MakeFirstNamePublic = MakeFirstNamePublic,
-                            MakeLastNamePublic = MakeLastNamePublic,
-                            MakeBirthDatePublic = MakeBirthDatePublic,
-                            NickName = NickName,
-                            FirstName = FirstName,
-                            LastName = LastName,
-                            BirthDate = BirthDate,
-                            School = School,
-                            Job = Job,
-                            About = About,
-                            GenderId = GenderId
-                        };
-
-                        var result = await conn.ExecuteAsync(
-                            @"Update AspNetUsers
-                                set MakeFirstNamePublic = @MakeFirstNamePublic,
-                                    MakeLastNamePublic = @MakeLastNamePublic,
-                                    MakeBirthDatePublic = @MakeBirthDatePublic,
-                                    NickName = @NickName,
-                                    FirstName = @FirstName,
-                                    LastName = @LastName,
-                                    BirthDate = @BirthDate,
-                                    School = @School,
-                                    Job = @Job,
-                                    About = @About,
-                                    GenderId = @GenderId
-                                where Id = @UserId"
-                            , new
-                            {
-                                UserId,
-                                MakeFirstNamePublic,
-                                MakeLastNamePublic,
-                                MakeBirthDatePublic,
-                                NickName,
-                                FirstName,
-                                LastName,
-                                BirthDate,
-                                School,
-                                Job,
-                                About,
-                                GenderId
-                            });
-
-                        return user;
+                        throw new AppException($"The UserId {UserId} doesn't exist.");
                     }
+
+                    bool MakeFirstNamePublic = request.MakeFirstNamePublic;
+                    bool MakeLastNamePublic = request.MakeLastNamePublic;
+                    bool MakeBirthDatePublic = request.MakeBirthDatePublic;
+                    string NickName = request.NickName;
+                    string FirstName = request.FirstName;
+                    string LastName = request.LastName;
+                    DateTime BirthDate = request.BirthDate;
+                    string School = request.School;
+                    string Job = request.Job;
+                    string About = request.About;
+                    int? GenderId = request.GenderId;
+
+                    existingUser.MakeFirstNamePublic = MakeFirstNamePublic;
+                    existingUser.MakeLastNamePublic = MakeLastNamePublic;
+                    existingUser.MakeBirthDatePublic = MakeBirthDatePublic;
+                    existingUser.NickName = NickName;
+                    existingUser.FirstName = FirstName;
+                    existingUser.LastName = LastName;
+                    existingUser.BirthDate = BirthDate;
+                    existingUser.School = School;
+                    existingUser.Job = Job;
+                    existingUser.About = About;
+                    existingUser.GenderId = GenderId;
+
+                    var result = await _userManager.UpdateAsync(existingUser);
+
+                    if (result.Succeeded == false)
+                    {
+                        throw new AppException(result.Errors.ElementAt(0).Description);
+                    }
+
+                    return existingUser;
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                    throw new AppException(e.Message);
                 }
             }
         }

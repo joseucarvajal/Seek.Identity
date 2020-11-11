@@ -1,16 +1,14 @@
 ﻿namespace SeekQ.Identity.Application.Profile.Profile.Commands
 {
     using System;
-    using System.Data;
     using System.Threading;
     using System.Threading.Tasks;
-    using App.Common.SeedWork;
-    using Dapper;
+    using App.Common.Exceptions;
     using FluentValidation;
     using MediatR;
-    using Microsoft.Data.SqlClient;
     using Models;
     using Models.Profile;
+    using SeekQ.Identity.Data;
 
     public class CreateUserCommandHandler
     {
@@ -35,114 +33,59 @@
         {
             public CommandValidator()
             {
-                
+
             }
         }
 
         public class Handler : IRequestHandler<Command, ApplicationUser>
         {
-            private CommonGlobalAppSingleSettings _commonGlobalAppSingleSettings;
+            private ApplicationDbContext _applicationDbContext;
 
-            public Handler(CommonGlobalAppSingleSettings commonGlobalAppSingleSettings)
+            public Handler(ApplicationDbContext applicationDbContext)
             {
-                _commonGlobalAppSingleSettings = commonGlobalAppSingleSettings;
+                _applicationDbContext = applicationDbContext;
             }
 
             public async Task<ApplicationUser> Handle(Command request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    using (IDbConnection conn = new SqlConnection(_commonGlobalAppSingleSettings.MssqlConnectionString))
+                    Guid UserId = Guid.NewGuid();
+                    bool MakeFirstNamePublic = request.MakeFirstNamePublic;
+                    bool MakeLastNamePublic = request.MakeLastNamePublic;
+                    bool MakeBirthDatePublic = request.MakeBirthDatePublic;
+                    string NickName = request.NickName;
+                    string FirstName = request.FirstName;
+                    string LastName = request.LastName;
+                    DateTime BirthDate = request.BirthDate;
+                    string School = request.School;
+                    string Job = request.Job;
+                    string About = request.About;
+                    int? GenderId = request.GenderId;
+
+                    ApplicationUser user = new ApplicationUser()
                     {
-                        Guid UserId = Guid.NewGuid();
-                        bool MakeFirstNamePublic = request.MakeFirstNamePublic;
-                        bool MakeLastNamePublic = request.MakeLastNamePublic;
-                        bool MakeBirthDatePublic = request.MakeBirthDatePublic;
-                        string NickName = request.NickName;
-                        string FirstName = request.FirstName;
-                        string LastName = request.LastName;
-                        DateTime BirthDate = request.BirthDate;
-                        string School = request.School;
-                        string Job = request.Job;
-                        string About = request.About;
-                        int? GenderId = request.GenderId;
+                        Id = UserId.ToString(),
+                        MakeFirstNamePublic = MakeFirstNamePublic,
+                        MakeLastNamePublic = MakeLastNamePublic,
+                        MakeBirthDatePublic = MakeBirthDatePublic,
+                        NickName = NickName,
+                        FirstName = FirstName,
+                        BirthDate = BirthDate,
+                        School = School,
+                        Job = Job,
+                        About = About,
+                        GenderId = GenderId
+                    };
 
-                        ApplicationUser user = new ApplicationUser
-                        {
-                            Id = UserId.ToString(),
-                            MakeFirstNamePublic = MakeFirstNamePublic,
-                            MakeLastNamePublic = MakeLastNamePublic,
-                            MakeBirthDatePublic = MakeBirthDatePublic,
-                            NickName = NickName,
-                            FirstName = FirstName,
-                            BirthDate = BirthDate,
-                            School = School,
-                            Job = Job,
-                            About = About,
-                            GenderId = GenderId
-                        };
+                    _applicationDbContext.ApplicationUsers.Add(user);
+                    await _applicationDbContext.SaveChangesAsync();
 
-                        var result = await conn.ExecuteAsync(
-                            @"Insert Into AspNetUsers
-                                (   Id,
-                                    MakeFirstNamePublic,
-                                    MakeLastNamePublic,
-                                    MakeBirthDatePublic,
-                                    NickName,
-                                    FirstName,
-                                    LastName,
-                                    BirthDate,
-                                    School,
-                                    Job,
-                                    About,
-                                    GenderId,
-                                    EmailConfirmed,
-                                    PhoneNumberConfirmed,
-                                    TwoFactorEnabled,
-                                    LockoutEnabled,
-                                    AccessFailedCount
-                                )
-                                values (
-                                    @UserId,
-                                    @MakeFirstNamePublic,
-                                    @MakeLastNamePublic,
-                                    @MakeBirthDatePublic,
-                                    @NickName,
-                                    @FirstName,
-                                    @LastName,
-                                    @BirthDate,
-                                    @School,
-                                    @Job,
-                                    @About,
-                                    @GenderId,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                );"
-                            , new
-                            {
-                                UserId,
-                                MakeFirstNamePublic,
-                                MakeLastNamePublic,
-                                MakeBirthDatePublic,
-                                NickName,
-                                FirstName,
-                                LastName,
-                                BirthDate,
-                                School,
-                                Job,
-                                About,
-                                GenderId
-                            });
-
-                        return user;
-                    }
+                    return user;
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                    throw new AppException(e.Message);
                 }
             }
         }

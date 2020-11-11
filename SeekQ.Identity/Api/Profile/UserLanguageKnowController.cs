@@ -9,6 +9,7 @@
     using Application.Profile.UserLanguageKnow.ViewModel;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using SeekQ.Identity.Models.Profile;
     using Swashbuckle.AspNetCore.Annotations;
 
     [Route("api/v1/[controller]")]
@@ -41,7 +42,7 @@
         [SwaggerOperation(Summary = "add new language to a user")]
         [SwaggerResponse((int)HttpStatusCode.OK, "user language created succesfully")]
         [SwaggerResponse((int)HttpStatusCode.BadRequest, "Bad Request")]
-        public async Task<ActionResult<UserLanguageKnowViewModel>> CreateUserLanguage(
+        public async Task<ActionResult<UserLanguageKnow>> CreateUserLanguage(
             [FromBody] CreateUserLanguageKnowCommandHandler.Command command
         )
         {

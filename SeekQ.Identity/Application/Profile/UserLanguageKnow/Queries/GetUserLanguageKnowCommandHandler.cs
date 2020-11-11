@@ -11,6 +11,7 @@
     using Microsoft.Data.SqlClient;
     using System.Linq;
     using ViewModel;
+    using App.Common.Exceptions;
 
     public class GetUserLanguageKnowCommandHandler
     {
@@ -42,8 +43,7 @@
                     try
                     {
                         string sql =
-                        @"
-                            SELECT  lk.Id as LanguageKnowId,
+                        @"SELECT  lk.Id as LanguageKnowId,
                                     lk.Name as LanguageKnowName
 
                         FROM AspNetUsers u
@@ -58,7 +58,7 @@
                     }
                     catch (Exception e)
                     {
-                        throw e;
+                        throw new AppException(e.Message);
                     }
                 }
             }

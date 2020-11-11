@@ -11,6 +11,7 @@
     using Microsoft.Data.SqlClient;
     using System.Linq;
     using ViewModel;
+    using App.Common.Exceptions;
 
     public class GetUserQueryHandler
     {
@@ -70,7 +71,7 @@
                     }
                     catch (Exception e)
                     {
-                        throw e;
+                        throw new AppException(e.Message);
                     }
                 }
             }
