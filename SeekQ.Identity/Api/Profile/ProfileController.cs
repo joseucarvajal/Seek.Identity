@@ -26,23 +26,12 @@
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));            
         }
 
+        // POST api/v1/profile
         [HttpPost]
         [Route("set/password")]
         [SwaggerOperation(Summary = "add password to an existing user")]
         public async Task<ActionResult<ApplicationUser>> SetUserPassword(
             [FromBody] SetUserPasswordCommandHandler.Command command
-        )
-        {
-            return await _mediator.Send(command);
-        }
-
-        // POST api/v1/profile
-        [HttpPost]
-        [SwaggerOperation(Summary = "create new user")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "user created succesfully")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Bad Request")]
-        public async Task<ActionResult<ApplicationUser>> CreateUser(
-            [FromBody] CreateUserCommandHandler.Command command
         )
         {
             return await _mediator.Send(command);

@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuldingBlocks", "BuldingBlo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5AC44EFC-3B12-4359-8B58-8DBA9F421714}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{46A5388A-0E4C-4B6F-91C9-7BA73D3451FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeekQ.Identity.Test", "SeekQ.Identity.Test\SeekQ.Identity.Test.csproj", "{1A0BFB8D-1813-4458-886D-911562DB71B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,10 @@ Global
 		{1D312A2E-E420-45AC-8044-06A33D1B0E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D312A2E-E420-45AC-8044-06A33D1B0E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D312A2E-E420-45AC-8044-06A33D1B0E39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A0BFB8D-1813-4458-886D-911562DB71B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A0BFB8D-1813-4458-886D-911562DB71B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A0BFB8D-1813-4458-886D-911562DB71B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A0BFB8D-1813-4458-886D-911562DB71B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +46,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{353E6EEC-3464-429D-B427-B827C921D80B} = {5AC44EFC-3B12-4359-8B58-8DBA9F421714}
 		{8B223CCB-E1B1-432D-BF14-74E8D22772BC} = {2F7492F1-5DF6-404F-A227-A52A13D1CA9C}
+		{1A0BFB8D-1813-4458-886D-911562DB71B5} = {46A5388A-0E4C-4B6F-91C9-7BA73D3451FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {48AD99FC-34F5-49BB-89FE-5188A269EF60}

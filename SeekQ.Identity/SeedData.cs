@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -18,6 +17,10 @@ namespace SeekQ.Identity
 {
     public class SeedData
     {
+        // Statics IDs for users
+        public static readonly Guid ID_USER_MOCK1 = new Guid("545DE66E-19AC-47D2-57F6-08D8715337D7");
+        public static readonly Guid ID_USER_MOCK2 = new Guid("545DE66E-19AC-47D2-57F6-08D8715337D9");
+
         public static void EnsureSeedData(string connectionString)
         {
             var services = new ServiceCollection();
@@ -45,6 +48,7 @@ namespace SeekQ.Identity
                     {
                         alice = new ApplicationUser
                         {
+                            Id = ID_USER_MOCK1.ToString(),
                             UserName = "alice",
                             Email = "AliceSmith@email.com",
                             EmailConfirmed = true,
@@ -77,6 +81,7 @@ namespace SeekQ.Identity
                     {
                         bob = new ApplicationUser
                         {
+                            Id = ID_USER_MOCK2.ToString(),
                             UserName = "bob",
                             Email = "BobSmith@email.com",
                             EmailConfirmed = true

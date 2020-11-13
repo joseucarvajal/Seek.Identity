@@ -22,12 +22,6 @@ using SeekQ.Identity.Data;
 using SeekQ.Identity.Models;
 using SeekQ.Identity.Twilio;
 using Twilio;
-using SeekQ.Identity.Application.Profile.Gender.Queries;
-using SeekQ.Identity.Application.Profile.Language.Queries;
-using SeekQ.Identity.Application.Profile.Profile.Commands;
-using SeekQ.Identity.Application.Profile.Profile.Queries;
-using SeekQ.Identity.Application.Profile.UserLanguageKnow.Commands;
-using SeekQ.Identity.Application.Profile.UserLanguageKnow.Queries;
 
 namespace SeekQ.Identity
 {
@@ -48,16 +42,6 @@ namespace SeekQ.Identity
                     .AddFluentValidation(cfg =>
                     {
                         cfg.RegisterValidatorsFromAssemblyContaining<SendPhoneVerificationCodeCommandHandler>();
-
-                        cfg.RegisterValidatorsFromAssemblyContaining<CreateUserCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<CreateUserLanguageKnowCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<DeleteUserLanguageKnowCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<UpdateUserCommandHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<GetAllGendersQueryHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<GetAllLanguagesQueryHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<GetUserQueryHandler>();
-                        cfg.RegisterValidatorsFromAssemblyContaining<GetUserLanguageKnowCommandHandler>();
-
                         cfg.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                     });
                                 
@@ -67,30 +51,6 @@ namespace SeekQ.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(CreateUserCommandHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(CreateUserLanguageKnowCommandHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(DeleteUserLanguageKnowCommandHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(UpdateUserCommandHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(GetAllGendersQueryHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(GetAllLanguagesQueryHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(GetUserQueryHandler).Assembly);
-
-            services.AddCustomMSSQLDbContext<ApplicationDbContext>(Configuration)
-                    .AddMediatR(typeof(GetUserLanguageKnowCommandHandler).Assembly);
 
             var builder = services.AddIdentityServer(options =>
             {

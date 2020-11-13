@@ -50,4 +50,7 @@
     <Folder Include="Application\Profile\Gender\ViewModel\" />
     <Folder Include="Models\Profile\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="appsettings.old.json" />
+  </ItemGroup>
 </Project>
